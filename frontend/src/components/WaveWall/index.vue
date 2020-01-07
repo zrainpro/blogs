@@ -23,7 +23,7 @@
         width: 600,
         height: 550,
         interval: 3,
-        color: [255, 255, 255]
+        color: this.styles.color || [255, 255, 255]
       }
     },
     mounted () {

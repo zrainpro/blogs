@@ -2,18 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="733c56f9-dc62-4534-b879-54bc6598062e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/WaveWall/wave.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/plugins/storeData.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/HelloWorld.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Nav.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Nav.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/WaveWall.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/WaveWall/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/style/var.less" beforeDir="false" afterPath="$PROJECT_DIR$/src/style/var.less" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/ContextMenu.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/ContextMenu.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Home.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/WaveWall/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WaveWall/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/WaveWall/wave.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/WaveWall/wave.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/plugins/storeData.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/plugins/storeData.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +34,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="F:/ubcloud-tools" />
     <property name="list.type.of.created.stylesheet" value="Less" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -94,6 +87,10 @@
       <workItem from="1577672881123" duration="8973000" />
       <workItem from="1577755533096" duration="1427000" />
       <workItem from="1577756972977" duration="14705000" />
+      <workItem from="1577931520332" duration="2579000" />
+      <workItem from="1577944677357" duration="5747000" />
+      <workItem from="1578272276949" duration="12344000" />
+      <workItem from="1578384344332" duration="631000" />
     </task>
     <servers />
   </component>
@@ -105,10 +102,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="484" y="377" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1577756954378" />
-    <state x="604" y="336" key="FileChooserDialogImpl" timestamp="1577779815668">
+    <state x="604" y="336" key="FileChooserDialogImpl" timestamp="1578384359545">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="604" y="336" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1577779815668" />
+    <state x="604" y="336" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1578384359545" />
     <state x="480" y="257" width="1230" height="629" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1577433963427">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

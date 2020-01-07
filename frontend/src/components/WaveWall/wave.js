@@ -43,7 +43,7 @@ export default class Wave {
     this.ctx.beginPath()
     this.ctx.lineWidth = 1
     this.ctx.moveTo(0, this.d)
-    for (let i = this.step; i <= this.width; i += this.step) {
+    for (let i = 0; i <= this.width; i += this.step) {
       this.ctx.lineTo(i, this.caculate(i))
     }
     this.ctx.lineTo(this.width, this.height)
