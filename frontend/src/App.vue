@@ -49,17 +49,17 @@ export default {
         { name: '操作系统', route: '/os' },
         { name: '友情链接', route: '/blogroll', disabled: true }
       ],
-      styles: { color: [240, 242, 247] }, // 导航条样式
+      styles: { color: [255, 255, 255] }, // 导航条样式
       background: [
-        'https://img.zrain.top/img/232535.jpg?x-oss-process=style/webp',
-        'https://img.zrain.top/img/13206.jpg?x-oss-process=style/webp',
-        'https://img.zrain.top/img/150642rmddwgdde1x0o9az.jpg?x-oss-process=style/webp',
-        'https://img.zrain.top/img/216087.jpg?x-oss-process=style/webp',
-        'https://img.zrain.top/img/217652.jpg?x-oss-process=style/webp',
-        'https://img.zrain.top/img/217922.jpg?x-oss-process=style/webp',
-        'https://img.zrain.top/img/231285.jpg?x-oss-process=style/webp',
-        'https://img.zrain.top/img/287162.jpg?x-oss-process=style/webp',
-        'https://img.zrain.top/img/5040.jpg?x-oss-process=style/webp'
+        'http://img.zrain.top/img/232535.jpg?x-oss-process=style/webp',
+        'http://img.zrain.top/img/13206.jpg?x-oss-process=style/webp',
+        'http://img.zrain.top/img/150642rmddwgdde1x0o9az.jpg?x-oss-process=style/webp',
+        'http://img.zrain.top/img/216087.jpg?x-oss-process=style/webp',
+        'http://img.zrain.top/img/217652.jpg?x-oss-process=style/webp',
+        'http://img.zrain.top/img/217922.jpg?x-oss-process=style/webp',
+        'http://img.zrain.top/img/231285.jpg?x-oss-process=style/webp',
+        'http://img.zrain.top/img/287162.jpg?x-oss-process=style/webp',
+        'http://img.zrain.top/img/5040.jpg?x-oss-process=style/webp'
       ],
       backgroundImgColor: [], // 主题色
       which: null, // 当前背景图
@@ -156,7 +156,7 @@ export default {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #2D4654;
+    background-color: rgba(45,70,84,0.8);
     z-index: 20002;
     display: flex;
     justify-content: center;
