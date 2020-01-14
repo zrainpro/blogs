@@ -3,91 +3,90 @@
 const Controller = require('egg').Controller;
 const {
   checkEmpty,
-  checkExist,
   checkSave,
 } = require('../utils');
-// todo 实现评论接口: 获取文章的评论列表   添加评论
+
 class UserController extends Controller {
-  // constructor(props) {
-  //   super(props);
-  //   // const params = ctx.query; // url
-  //   // const params = ctx.request.body // post
-  // }
-  // 登录
-  async login() {
+  // 获取文章的评论列表
+  async getComments() {
     const { ctx } = this;
-    const params = ctx.request.body;
-    // 检查传参
-    const checkEmptyKeys = [
-      { key: 'user', message: '用户名不能为空' },
-      { key: 'password', message: '密码不能为空' },
-    ];
-    checkEmpty(checkEmptyKeys, params, ctx);
-    // 搜索用户
-    const user = await ctx.model.User.findOne({
-      user: params.user,
-    }).select('user password avatar nickname email phone');
-    if (!user._id) {
-      ctx.throw('用户不存在,请确认后重试!');
-    } else if (user.password !== params.password) {
-      ctx.throw('密码错误,请确认后重试!');
+    const params = ctx.query;
+    const selectKeys = 'article nickname avatar email content pid updateTime createTime';
+    const limit = params.limit || 10; // 默认取10条数据
+    let skipNum = ((params.page || 1) - 1) * limit; // 从多少条开始获取数据, 用于分页
+    skipNum < 0 && (skipNum = 0); // 不能为负数
+    const articleId = ctx.params.id;
+    if (!articleId) {
+      ctx.throw('未知的文章');
     }
+    const filterKeys = {
+      article: articleId,
+      rootPid: null,
+      pid: null,
+      disabled: 0,
+    }; // 筛选条件
+    const result = await ctx.model.Comment.find(filterKeys)
+      .sort({ updateTime: -1 }) // 按照更细时间降序排列
+      .skip(skipNum) // 分页
+      .limit(limit) // 请求数据条数
+      .select(selectKeys);
+    // 如果没有找到数据, 直接返回空数组
+    if (!result) {
+      ctx.body = [];
+      return;
+    }
+    const response = JSON.parse(JSON.stringify(result));
+    // 获取根评论的子评论
+    for (const item of response) {
+      const childResult = await ctx.model.Comment.find({
+        article: articleId,
+        rootPid: item._id,
+        disabled: 0,
+      }).sort({ updateTime: -1 }).select(selectKeys);
+      item.children = childResult || [];
+    }
+    // 获取评论总条数
+    const total = await ctx.model.Comment.find(filterKeys).count('_id');
     ctx.body = {
-      user: user.user,
-      avatar: user.avatar,
-      nickname: user.nickname,
-      email: user.email,
-      phone: user.phone,
+      self: true,
+      data: response,
+      page: params.page || 1,
+      limit,
+      total,
     };
   }
-  // 修改用户信息 (需要追加校验)
-  async updateUserInfo() {
+  // 添加评论
+  async addComment() {
     const { ctx } = this;
     const params = ctx.request.body;
     // 检查传参
     const checkEmptyKeys = [
-      { key: 'user', message: '用户名不能为空' },
+      { key: 'article', message: '文章ID不能为空' },
+      { key: 'nickname', message: '昵称不能为空' },
+      { key: 'email', message: '电子邮箱不能为空' },
+      { key: 'content', message: '评论内容不能为空' },
     ];
     checkEmpty(checkEmptyKeys, params, ctx);
-
-    const result = await ctx.model.User.findOneAndUpdate({
-      user: params.user,
-    }, {
-      $set: { ...params },
-    }).select('user avatar nickname email phone');
-    if (!result || !result._id) {
-      ctx.throw('无法保存用户信息或者用户不存在');
+    // 校验文章是否存在
+    const articleInfo = await ctx.model.Article.findOne({ _id: params.article });
+    if (!articleInfo) {
+      ctx.throw('文章不存在');
     }
-    ctx.body = result;
-  }
-  // 注册
-  async register() {
-    const { ctx } = this;
-    const params = ctx.request.body;
-    // 检查输入字段
-    const checkEmptyKeys = [
-      { key: 'user', message: '用户名不能为空' },
-      { key: 'password', message: '密码不能为空' },
-      { key: 'email', message: '电子邮件不能为空' },
-    ];
-    checkEmpty(checkEmptyKeys, params, ctx);
-    // 判断是否存在
-    const checkExistKeys = [
-      { key: 'user', value: params.user, message: `用户 “${params.user}” 已存在` },
-    ];
-    await checkExist(checkExistKeys, ctx, ctx.model.User);
-    // 存储用户信息
-    const result = await ctx.model.User.create({
-      user: params.user,
-      password: params.password,
+    // 保存
+    const result = await ctx.model.Comment.create({
+      article: params.article,
+      nickname: params.nickname,
       avatar: params.avatar,
-      nickname: params.nickname || params.user,
       email: params.email,
-      phone: params.phone,
+      content: params.content,
+      pid: params.pid,
+      rootPid: params.rootPid,
+      disabled: 0,
+      updateTime: new Date().getTime(),
+      createTime: new Date().getTime(),
     });
-    // 检查是否保存成功
-    await checkSave(result, ctx);
-    ctx.body = 'success';
+    checkSave(result, ctx, '评论失败,请重试!');
+    ctx.body = result;
   }
 }
 

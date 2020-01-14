@@ -5,7 +5,7 @@ const lodash = require('lodash');
 function checkEmpty(keys = [], params = {}, ctx) {
   keys.forEach(({ key, message }) => {
     if (lodash.isEmpty(params[key])) {
-      ctx.throw(params[message]);
+      ctx.throw(message);
     }
   });
 }
