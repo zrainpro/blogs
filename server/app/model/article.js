@@ -13,6 +13,8 @@ module.exports = app => {
     disabled: { type: Number, default: 0 }, // 是否禁用 1/禁用 | 0/不禁用
     category: { type: String }, // 文章分类, 所属目录
     view: { type: Number, default: 0 }, // 阅读量
+    like: { type: Number, default: 0 }, // 点赞数
+    dislike: { type: Number, default: 0 }, // 踩数
     updateTime: { type: Number }, // 更新时间
     createTime: { type: Number }, // 创建时间
   });

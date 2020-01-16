@@ -9,7 +9,7 @@ const {
 class UserController extends Controller {
   constructor(props) {
     super(props);
-    this.selectKeys = 'title topicImg intro tag content category view updateTime createTime';
+    this.selectKeys = 'title topicImg intro tag content category like dislike view updateTime createTime';
   }
   // 新建/修改 文章
   async patchArticle() {
@@ -86,7 +86,31 @@ class UserController extends Controller {
       .sort({ updateTime: -1 })
       .skip(skipNum)
       .limit(limit)
-      .select(this.selectKeys);
+      .select(this.selectKeys.replace('content', ''));
+    ctx.body = result;
+  }
+  // 点赞文章
+  async likeArticle() {
+    const { ctx } = this;
+    const id = ctx.params.id;
+    if (!id) {
+      ctx.throw('文章不存在');
+    }
+    const result = await ctx.model.Comment.update({
+      _id: id,
+    }, { $inc: { like: 1 } });
+    ctx.body = result;
+  }
+  // 点踩文章
+  async dislikeArticle() {
+    const { ctx } = this;
+    const id = ctx.params.id;
+    if (!id) {
+      ctx.throw('文章不存在');
+    }
+    const result = await ctx.model.Comment.update({
+      _id: id,
+    }, { $inc: { dislike: 1 } });
     ctx.body = result;
   }
 }

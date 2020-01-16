@@ -11,7 +11,7 @@ class UserController extends Controller {
   async getComments() {
     const { ctx } = this;
     const params = ctx.query;
-    const selectKeys = 'article nickname avatar email content pid updateTime createTime';
+    const selectKeys = 'article nickname avatar email blog content like dislike pid updateTime createTime';
     const limit = params.limit || 10; // 默认取10条数据
     let skipNum = ((params.page || 1) - 1) * limit; // 从多少条开始获取数据, 用于分页
     skipNum < 0 && (skipNum = 0); // 不能为负数
@@ -43,7 +43,12 @@ class UserController extends Controller {
         rootPid: item._id,
         disabled: 0,
       }).sort({ updateTime: -1 }).select(selectKeys);
-      item.children = childResult || [];
+      // 获取回复评论的父评论信息 同时过滤 pid 不存在的
+      const childResponse = JSON.parse(JSON.stringify(childResult || []));
+      item.children = childResponse.map(it => {
+        const pidInfo = childResponse.find(_ => String(_._id) === String(it.pid));
+        return { ...it, pidInfo };
+      });
     }
     // 获取评论总条数
     const total = await ctx.model.Comment.find(filterKeys).count('_id');
@@ -78,6 +83,7 @@ class UserController extends Controller {
       nickname: params.nickname,
       avatar: params.avatar,
       email: params.email,
+      blog: params.blog,
       content: params.content,
       pid: params.pid,
       rootPid: params.rootPid,
@@ -86,6 +92,30 @@ class UserController extends Controller {
       createTime: new Date().getTime(),
     });
     checkSave(result, ctx, '评论失败,请重试!');
+    ctx.body = result;
+  }
+  // 点赞评论
+  async likeComment() {
+    const { ctx } = this;
+    const id = ctx.params.id;
+    if (!id) {
+      ctx.throw('评论不存在');
+    }
+    const result = await ctx.model.Comment.update({
+      _id: id,
+    }, { $inc: { like: 1 } });
+    ctx.body = result;
+  }
+  // 点踩评论
+  async dislikeComment() {
+    const { ctx } = this;
+    const id = ctx.params.id;
+    if (!id) {
+      ctx.throw('评论不存在');
+    }
+    const result = await ctx.model.Comment.update({
+      _id: id,
+    }, { $inc: { dislike: 1 } });
     ctx.body = result;
   }
 }

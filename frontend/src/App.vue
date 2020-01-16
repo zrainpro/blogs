@@ -4,7 +4,7 @@
       <div class="loader JS_on">
         <span class="binary" />
         <span class="binary" />
-        <span class="getting-there">拼命加载中...</span>
+        <span class="getting-there">喝杯咖啡...</span>
       </div>
     </div>
     <div id="nav" ref="nav">
@@ -67,6 +67,8 @@ export default {
     }
   },
   mounted () {
+    // 获取菜单
+    this.getMenu();
     // 设置全局数据 loading
     this.$storeData('loading', true, {
       bind: this,
@@ -82,10 +84,11 @@ export default {
         this.$refs.nav.className = ''
       }
     }
-    // 动态设置背景图
-    this.getBackImg()
-    // 背景主题色提取
-    this.getThemeColor()
+    // 注册获取背景事件
+    this.$onComponentMethod('changeTheme', {
+      immediate: true,
+      handler: this.changeTheme
+    })
     // 添加右键菜单事件
     this.$nextTick(() => {
       // eslint-disable-next-line no-new
@@ -99,10 +102,36 @@ export default {
     })
   },
   methods: {
+    // 获取菜单
+    getMenu() {
+      this.apiGet('/api/category/list').then(res => {
+        if (res.code === 200) {
+          this.menu = res.data.map(root => {
+            const menuItem = { name: root.name, route: `/${root.address}`, id: root._id };
+            if (root.children) {
+              menuItem.children = root.children.map(child => ({ name: child.name, route: `/${root.address}/${child.address}`, id: child._id }))
+            }
+            return menuItem;
+          });
+          this.$storeData('menu', this.menu);
+        }
+      })
+    },
+    // 更换背景图与主题色
+    changeTheme(url) {
+      // 动态设置背景图
+      this.getBackImg(url)
+      // 背景主题色提取
+      this.getThemeColor()
+      // 防止加载图片意外没有关闭 loading 动画 10秒超时
+      setTimeout(() => {
+        this.$global.loading && (this.$global.loading = false);
+      }, 10 * 1000)
+    },
     // 获取背景图
-    getBackImg() {
+    getBackImg(url) {
       const length = this.background.length;
-      this.which = this.background[Math.floor(Math.random() * length)];
+      this.which = url || this.background[Math.floor(Math.random() * length)];
       this.$refs.nav.setAttribute('style', `background-image: url(${this.which})`);
     },
     // 获取主题色
@@ -130,6 +159,8 @@ export default {
             color: this.backgroundImgColor[1]
           }
           document.body.setAttribute('style', `background: rgb(${this.styles.color.join(',')})`)
+          // 把主题色保存到全局
+          this.$storeData('themeColor', this.backgroundImgColor[1])
           // 设置 loading 状态
           this.$global.loading = false;
         }
@@ -149,7 +180,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
   .loading {
     position: fixed;
     top: 0;
@@ -294,7 +324,7 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 20001;
+    z-index: 1999;
     background-color: transparent;
     backdrop-filter: blur(8px);
     display: flex;
@@ -324,7 +354,10 @@ export default {
   }
 }
 #content {
-  min-height: calc(100vh - 80px);
-  height: 1000px;
+  min-height: calc(100vh - 400px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 </style>

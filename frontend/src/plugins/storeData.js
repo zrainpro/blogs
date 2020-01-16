@@ -3,6 +3,7 @@ import Vue from 'vue'
 // 全局状态与全局状态监听 START
 const globalCallback = {};
 const globalCallbackBind = {};
+const globalGetDataPromise = {};
 Vue.prototype.$global = new Proxy({}, {
   get (target, p, receiver) {
     // console.log(target, p, receiver);
@@ -11,6 +12,10 @@ Vue.prototype.$global = new Proxy({}, {
   set (target, p, value, receiver) {
     // console.log(target, p, value, receiver, this);
     globalCallback[p] && globalCallback[p].call(globalCallbackBind[p], target[p], value);
+    if (globalGetDataPromise[p]) {
+      globalGetDataPromise[p].call(null, value);
+      delete globalGetDataPromise[p];
+    }
     // 更改值之后触发重新渲染(真正改变才触发)
     target[p] !== value && Vue.prototype.$forceUpdate()
     return Reflect.set(target, p, value, receiver);
@@ -21,7 +26,17 @@ Vue.prototype.$watchStore = function (name, { handler }) {
     globalCallback[name] = handler
   }
 }
-Vue.prototype.$storeData = function (name, val, { bind, handler }) {
+// 获取真实有效的值,直到有值时调用
+Vue.prototype.$getStore = function(name) {
+  return new Promise(resolve => {
+    if (Vue.prototype.$global[name]) {
+      resolve(Vue.prototype.$global[name])
+    } else {
+      globalGetDataPromise[name] = resolve
+    }
+  })
+}
+Vue.prototype.$storeData = function (name, val, { bind, handler } = {}) {
   Vue.prototype.$global[name] = val;
   window.$global = Vue.prototype.$global;
   handler && (globalCallback[name] = handler);
@@ -31,11 +46,12 @@ Vue.prototype.$storeData = function (name, val, { bind, handler }) {
 
 // event bus 部分 START
 Vue.prototype.$eventComponentMethod = {}
-Vue.prototype.$onComponentMethod = function (methodName, callback) {
+Vue.prototype.$onComponentMethod = function (methodName, { immediate = false, handler } = {}) {
   !Vue.prototype.$eventComponentMethod && (Vue.prototype.$eventComponentMethod = {})
   Vue.prototype.$eventComponentMethod[methodName] = {
-    callback
+    callback: handler
   }
+  immediate && Vue.prototype.$emitComponentMethod(methodName)
 }
 Vue.prototype.$emitComponentMethod = function (methodName, val) {
   !Vue.prototype.$eventComponentMethod && (Vue.prototype.$eventComponentMethod = {})
@@ -46,3 +62,24 @@ Vue.prototype.$emitComponentMethod = function (methodName, val) {
   }
 }
 // event bus 部分 END
+
+// 解析 menu 菜单Id
+Vue.prototype.$parseRouter = function () {
+  return new Promise(resolve => {
+    Vue.prototype.$getStore('menu').then(menu => {
+      // 首页没有分类 ID
+      if (location.pathname === '/') {
+        resolve(null);
+      } else {
+        const ewaytekMenu = menu.reduce((a, b) => {
+          if (b.children) {
+            return [...a, b, ...b.children]
+          } else {
+            return [...a, b]
+          }
+        }, []);
+        resolve(ewaytekMenu.find(it => it.route === location.pathname.replace('/category/', '/')));
+      }
+    })
+  });
+}

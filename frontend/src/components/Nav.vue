@@ -2,10 +2,10 @@
   <div ref="menu" class="nav-menu">
     <div ref="bar" class="nvm-menu-bar" />
     <div v-for="(item, index) in menu" :key="item.name" class="nav-menu-item" @mouseenter="mouseenter(item, index)" @mouseleave="mouseleave">
-      <router-link :to="item.route">{{item.name}}</router-link>
+      <router-link :to="`/category${item.route}`">{{item.name}}</router-link>
       <div v-if="item.children && showDrop === item.name" ref="menuDrop" class="nav-menu-drop">
         <div v-for="it in item.children" :key="it.name" class="nav-menu-drop-item">
-          <router-link :to="it.route">{{it.name}}</router-link>
+          <router-link :to="`/category${it.route}`">{{it.name}}</router-link>
         </div>
       </div>
     </div>

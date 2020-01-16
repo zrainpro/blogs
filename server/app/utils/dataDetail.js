@@ -33,7 +33,7 @@ function recoverTreeData(source = [], pidKey = 'pid', idKey = '_id', childKey = 
 // 截取纯文字
 function sliceText(text = '', count = 0) {
   // 先得到纯文本, 剔除标签等信息
-  const filterText = text.replace(/<[^>]>/g, '').trim();
+  const filterText = text.replace(/<[^>]+>/g, '').trim();
   return filterText.slice(0, count);
 }
 
