@@ -13,11 +13,11 @@
     <div class="mark">
       <div>
         <span><icon use="iconyuedu" />{{info.view || 1}}</span>
-        <span><icon use="icondianzan1" />{{info.like || 0}}</span>
-        <span><icon use="iconfandui" />{{info.dislike || 0}}</span>
+        <span @click="handleLikeArticle(info)"><icon use="icondianzan1" />{{info.like || 0}}</span>
+        <span @click="handleDislikeArticle(info)"><icon use="iconfandui" />{{info.dislike || 0}}</span>
       </div>
       <div>
-        <el-button type="text">展开评论</el-button>
+        <Reply @reply="replayArticle" />
       </div>
     </div>
     <!--  评论  -->
@@ -27,13 +27,15 @@
                    :detail="item"
                    @like="handleLikeComment"
                    @dislike="handleDislikeComment"
+                   @reply="replayArticle($event, { pid: item._id, rootPid: item._id })"
       >
-        <div class="comment-children">
+        <div class="comment-children" v-if="item.children && item.children.length">
           <CommentItem v-for="it in item.children"
                        :key="it._id"
                        :detail="it"
                        @like="handleLikeComment"
                        @dislike="handleDislikeComment"
+                       @reply="replayArticle($event, { pid: it._id, rootPid: item._id })"
           />
         </div>
       </CommentItem>
@@ -44,22 +46,18 @@
 <script>
   import moment from 'moment';
   import CommentItem from '../components/CommentItem';
+  import Reply from '../components/Reply';
   export default {
     name: 'Article',
     components: {
-      CommentItem
+      CommentItem,
+      Reply
     },
     data() {
       return {
         moment,
         info: {},
-        comment: [],
-        visitor: {
-          nickname: '',
-          email: '',
-          blog: '',
-          avatar: ''
-        }
+        comment: []
       }
     },
     mounted () {
@@ -69,21 +67,24 @@
       // 获取文章相关信息
       getArticle() {
         this.$global.loading = true; // 开启加载动画
-        this.$emitComponentMethod('changeTheme', 'http://static.runoob.com/images/demo/demo2.jpg');
         // 获取文章信息
         this.apiGet(`/api/article/${this.$route.params.id}/detail`).then(res => {
+          this.$safeEmitComponentMethod('changeTheme', this.info.topicImg);
           if (res.code === 200) {
             this.info = res.data;
           }
         });
+        // 获取评论信息
+        this.getComment();
+      },
+      // 获取评论信息
+      getComment() {
         // 获取评论信息
         this.apiGet(`/api/comment/${this.$route.params.id}/list`).then(res => {
           if (res.code === 200) {
             this.comment = res.data;
           }
         })
-        // 获取访客信息
-        this.visitor = JSON.parse(localStorage.getItem('visitorInfo') || '{}');
       },
       // 点赞评论
       handleLikeComment(detail) {
@@ -103,17 +104,45 @@
       },
       // 点赞文章
       handleLikeArticle(detail) {
-        this.apiPost(`/api/article/${detail._id}/like`).then(res => {
-          if (res.code === 200) {
-            detail.like += 1
-          }
-        })
+        if (!(localStorage.getItem('likeArticle') || '').includes(detail._id)) {
+          localStorage.setItem('likeArticle', `${localStorage.getItem('likeArticle') || ''}_${detail._id}`)
+          this.apiPost(`/api/article/${detail._id}/like`).then(res => {
+            if (res.code === 200) {
+              detail.like += 1
+            }
+          })
+        } else {
+          this.$message.info('您已经点过赞了哦')
+        }
       },
       // 点踩评论
       handleDislikeArticle(detail) {
-        this.apiPost(`/api/article/${detail._id}/dislike`).then(res => {
+        if (!(localStorage.getItem('dislikeArticle') || '').includes(detail._id)) {
+          localStorage.setItem('dislikeArticle', `${localStorage.getItem('dislikeArticle') || ''}_${detail._id}`)
+          this.apiPost(`/api/article/${detail._id}/dislike`).then(res => {
+            if (res.code === 200) {
+              detail.dislike += 1
+            }
+          })
+        } else {
+          this.$message.info('您已经点过踩了哦')
+        }
+      },
+      // 评论文章
+      replayArticle(item, otherInfo = {}) {
+        this.apiPost('/api/comment/create', {
+          article: this.$route.params.id,
+          nickname: item.nickname,
+          avatar: item.avatar,
+          email: item.email,
+          blog: item.blog,
+          content: item.content,
+          pid: otherInfo.pid,
+          rootPid: otherInfo.rootPid
+        }).then(res => {
           if (res.code === 200) {
-            detail.dislike += 1
+            this.$message.success('评论成功!');
+            this.getComment();
           }
         })
       }
@@ -150,7 +179,7 @@
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       span {
         font-size: 18px;
         cursor: pointer;
@@ -172,68 +201,10 @@
     /* 评论 */
     .comment {
       margin-top: 40px;
-      .comment-item {
-        +.comment-item {
-          margin-top: 20px;
-        }
-        .comment-detail {
-          display: flex;
-          flex-direction: row;
-          justify-content: flex-start;
-          align-items: flex-start;
-        }
-        .comment-children {
-          margin-top: 10px;
-          padding: 15px;
-          margin-left: 70px;
-          background-color: rgba(0,0,0,0.04);
-        }
-        .comment-head {
-          width: 55px;
-          height: 55px;
-          border-radius: 5px;
-          overflow: hidden;
-          margin-right: 20px;
-          box-shadow: @head-box-shadow;
-          >img {
-            width: 100%;
-            height: 100%;
-          }
-        }
-        .comment-content {
-          flex: 1;
-          .comment-nickname {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            font-weight: bold;
-            font-size: 16px;
-            border-bottom: 1px solid #dddddd;
-            >*:nth-child(1) {
-              border-bottom: 1px solid @link;
-              padding-bottom: 5px;
-            }
-          }
-          .comment-text {
-            margin-top: 4px;
-            font-size: 14px;
-            color: #666666;
-          }
-        }
-        .comment-mark {
-          display: flex;
-          flex-direction: row;
-          justify-content: flex-end;
-          span {
-            cursor: pointer;
-            svg {
-              margin-right: 4px;
-            }
-            +span {
-              margin-left: 10px;
-            }
-          }
-        }
+      .comment-children {
+        margin: 10px 0 10px 70px;
+        padding: 15px;
+        background-color: rgba(0,0,0,0.04);
       }
     }
   }

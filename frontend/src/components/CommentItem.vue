@@ -6,11 +6,11 @@
         <!-- 名字, 有写博客直接链接到博客 -->
         <div class="comment-nickname">
           <div>
-            <router-link v-if="detail.blog" :to="detail.blog">{{detail.nickname}}</router-link>
+            <a v-if="detail.blog" target="_blank" :href="detail.blog">{{detail.nickname}}</a>
             <span v-else>{{detail.nickname}}</span>
             <span v-if="detail.pidInfo">
               <span style="margin: 0 10px">回复</span>
-              <router-link v-if="detail.pidInfo.blog" :to="detail.pidInfo.blog">{{detail.pidInfo.nickname}}</router-link>
+              <a v-if="detail.pidInfo.blog" target="_blank" :href="detail.pidInfo.blog">{{detail.pidInfo.nickname}}</a>
               <span v-else>{{detail.pidInfo.nickname}}</span>
             </span>
           </div>
@@ -21,7 +21,7 @@
         <div class="comment-mark">
           <span @click="handleLike"><icon use="icondianzan1" />{{detail.like || 0}}</span>
           <span @click="handleDislike"><icon use="iconfandui" />{{detail.dislike || 0}}</span>
-          <el-button type="text" @click="handleReply">回复</el-button>
+          <Reply @reply="handleReply" />
         </div>
       </div>
     </div>
@@ -31,8 +31,10 @@
 
 <script>
   import moment from 'moment';
+  import Reply from './Reply';
   export default {
     name: 'CommentItem',
+    components: { Reply },
     props: {
       detail: {
         type: Object,
@@ -57,8 +59,8 @@
           this.$emit('dislike', this.detail)
         }
       },
-      handleReply() {
-        this.$emit('reply', this.detail)
+      handleReply(item) {
+        this.$emit('reply', item)
       }
     }
   }
@@ -67,9 +69,6 @@
 <style lang="less" scoped>
   @import url(../style/var);
   .comment-item {
-    +.comment-item {
-      margin-top: 20px;
-    }
     .comment-detail {
       display: flex;
       flex-direction: row;
@@ -113,7 +112,7 @@
       flex-direction: row;
       justify-content: flex-end;
       align-items: center;
-      * {
+      span {
         cursor: pointer;
         svg {
           margin-right: 4px;

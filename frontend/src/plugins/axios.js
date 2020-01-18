@@ -24,6 +24,7 @@ _axios.interceptors.request.use(
   },
   function(error) {
     // Do something with request error
+    Vue.prototype.$global.loading && (Vue.prototype.$global.loading = false)
     return Promise.reject(error);
   }
 );
@@ -33,12 +34,20 @@ _axios.interceptors.response.use(
   function(response) {
     const data = response.data;
     if (data.code !== 200) {
+      // 如果没有登录跳转到登录
+      if (data.code === 600) {
+        window.location.href = '/login';
+      }
+      Vue.prototype.$global.loading && (Vue.prototype.$global.loading = false)
       Element.Message.error(data.message || '网络错误')
     }
     return response.data;
   },
   function(error) {
     // Do something with response error
+    const data = error.response.data;
+    Vue.prototype.$global.loading && (Vue.prototype.$global.loading = false)
+    Element.Message.error(data.message || '网络错误')
     return Promise.reject(error);
   }
 );

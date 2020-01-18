@@ -45,20 +45,31 @@ Vue.prototype.$storeData = function (name, val, { bind, handler } = {}) {
 // 全局状态与全局状态监听 END
 
 // event bus 部分 START
-Vue.prototype.$eventComponentMethod = {}
-Vue.prototype.$onComponentMethod = function (methodName, { immediate = false, handler } = {}) {
-  !Vue.prototype.$eventComponentMethod && (Vue.prototype.$eventComponentMethod = {})
-  Vue.prototype.$eventComponentMethod[methodName] = {
+const eventComponentMethod = {};
+const globalSafeEmitPromise = {};
+Vue.prototype.$onComponentMethod = function (methodName, { immediate = false, params, handler } = {}) {
+  eventComponentMethod[methodName] = {
     callback: handler
   }
-  immediate && Vue.prototype.$emitComponentMethod(methodName)
+  immediate && Vue.prototype.$emitComponentMethod(methodName, params);
+  // 安全触发
+  if (globalSafeEmitPromise[methodName]) {
+    Vue.prototype.$emitComponentMethod(methodName, globalSafeEmitPromise[methodName].val);
+    delete globalSafeEmitPromise[methodName];
+  }
 }
 Vue.prototype.$emitComponentMethod = function (methodName, val) {
-  !Vue.prototype.$eventComponentMethod && (Vue.prototype.$eventComponentMethod = {})
-  if (Vue.prototype.$eventComponentMethod[methodName]) {
-    Vue.prototype.$eventComponentMethod[methodName].callback.call(null, val);
+  if (eventComponentMethod[methodName]) {
+    eventComponentMethod[methodName].callback.call(null, val);
   } else {
     // console.error('未知事件')
+  }
+}
+Vue.prototype.$safeEmitComponentMethod = function (methodName, val) {
+  if (eventComponentMethod[methodName]) {
+    eventComponentMethod[methodName].callback.call(null, val);
+  } else {
+    globalSafeEmitPromise[methodName] = { val };
   }
 }
 // event bus 部分 END
