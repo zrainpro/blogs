@@ -27,11 +27,18 @@ class UserController extends Controller {
     const user = await ctx.model.User.findOne({
       user: params.user,
     }).select('user password avatar nickname email phone');
-    if (!user._id) {
+    if (!user || !user._id) {
       ctx.throw('用户不存在,请确认后重试!');
     } else if (user.password !== params.password) {
       ctx.throw('密码错误,请确认后重试!');
     }
+    // 设置 session
+    ctx.session.user = JSON.stringify({
+      id: user._id,
+      user: user.user,
+      password: user.password,
+      time: new Date().getTime(),
+    });
     ctx.body = {
       user: user.user,
       avatar: user.avatar,

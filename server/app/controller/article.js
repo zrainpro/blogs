@@ -96,9 +96,10 @@ class UserController extends Controller {
     if (!id) {
       ctx.throw('文章不存在');
     }
-    const result = await ctx.model.Comment.update({
+    const params = ctx.request.body;
+    const result = await ctx.model.Article.update({
       _id: id,
-    }, { $inc: { like: 1 } });
+    }, { $inc: { like: params.off ? -1 : 1 } });
     ctx.body = result;
   }
   // 点踩文章
@@ -108,9 +109,10 @@ class UserController extends Controller {
     if (!id) {
       ctx.throw('文章不存在');
     }
-    const result = await ctx.model.Comment.update({
+    const params = ctx.request.body;
+    const result = await ctx.model.Article.update({
       _id: id,
-    }, { $inc: { dislike: 1 } });
+    }, { $inc: { dislike: params.off ? -1 : 1 } });
     ctx.body = result;
   }
 }

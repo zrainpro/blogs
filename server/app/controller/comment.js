@@ -96,14 +96,16 @@ class UserController extends Controller {
   }
   // 点赞评论
   async likeComment() {
+    // todo 防止重复点赞
     const { ctx } = this;
     const id = ctx.params.id;
+    const params = ctx.request.body;
     if (!id) {
       ctx.throw('评论不存在');
     }
     const result = await ctx.model.Comment.update({
       _id: id,
-    }, { $inc: { like: 1 } });
+    }, { $inc: { like: params.off ? -1 : 1 } });
     ctx.body = result;
   }
   // 点踩评论
@@ -113,9 +115,10 @@ class UserController extends Controller {
     if (!id) {
       ctx.throw('评论不存在');
     }
+    const params = ctx.request.body;
     const result = await ctx.model.Comment.update({
       _id: id,
-    }, { $inc: { dislike: 1 } });
+    }, { $inc: { dislike: params.off ? -1 : 1 } });
     ctx.body = result;
   }
 }

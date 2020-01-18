@@ -24,4 +24,6 @@ module.exports = app => {
   router.get('/article/list', controller.article.getList); // 获取文章列表
   router.post('/article/:id/like', controller.article.likeArticle); // 点赞文章
   router.post('/article/:id/dislike', controller.article.dislikeArticle); // 点踩文章
+  // 代理请求防止跨域
+  router.post('/proxy', controller.proxy.index);
 };
