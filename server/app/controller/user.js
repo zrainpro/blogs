@@ -47,6 +47,12 @@ class UserController extends Controller {
       phone: user.phone,
     };
   }
+  // 登出
+  async loginout() {
+    const { ctx } = this;
+    ctx.session.user = null;
+    ctx.body = 'ok';
+  }
   // 修改用户信息 (需要追加校验)
   async updateUserInfo() {
     const { ctx } = this;

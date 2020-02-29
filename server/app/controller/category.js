@@ -14,12 +14,17 @@ class CategoryController extends Controller {
   // 获取分类列表
   async getList() {
     const { ctx } = this;
-    const params = ctx.query;
-    const filterKey = {}; // 默认搜索没禁用的
-    if (!params.all) {
-      filterKey.disabled = 0;
-    }
-    const result = await ctx.model.Category.find(filterKey).select('name address pid');
+    const filterKey = { disabled: 0 }; // 默认搜索没禁用的
+    const selectKeys = 'name address pid';
+    const result = await ctx.model.Category.find(filterKey).select(selectKeys);
+    // 树形数据构建与返回
+    ctx.body = createTreeData(result, 'pid');
+  }
+  // 获取全部分类
+  async getAllList() {
+    const { ctx } = this;
+    const selectKeys = 'name address pid disabled';
+    const result = await ctx.model.Category.find().select(selectKeys);
     // 树形数据构建与返回
     ctx.body = createTreeData(result, 'pid');
   }

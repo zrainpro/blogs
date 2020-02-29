@@ -26,15 +26,16 @@ module.exports = () => {
       let redirect = false;
       if (!user) {
         redirect = true;
-      }
-      user = JSON.parse(user);
-      const result = ctx.model.findOne({ _id: user.id });
-      if (!result || result.user !== user.user || result.password !== user.password) {
-        redirect = true;
-      }
-      // 登录是否超时, 超时时间 1天
-      if (new Date().getTime() - user.time > 24 * 3600 * 1000) {
-        redirect = true;
+      } else {
+        user = JSON.parse(user);
+        const result = await ctx.model.User.findOne({ _id: user.id }).select('user password');
+        if (!result || result.user !== user.user || result.password !== user.password) {
+          redirect = true;
+        }
+        // 登录是否超时, 超时时间 1天
+        if (new Date().getTime() - user.time > 24 * 3600 * 1000) {
+          redirect = true;
+        }
       }
       if (redirect) {
         ctx.session.user = null;

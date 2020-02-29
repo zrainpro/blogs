@@ -40,6 +40,9 @@
     mounted () {
       // 去除背景色
       document.body.removeAttribute('style');
+      if (sessionStorage.getItem('user')) {
+        this.$router.push('/manage');
+      }
     },
     methods: {
       login() {
@@ -50,7 +53,9 @@
               password: window.btoa(this.user.password)
             }).then(res => {
               if (res.code === 200) {
+                window.sessionStorage.setItem('user', JSON.stringify(res.data));
                 this.$message.success('登录成功');
+                this.$router.push('/manage');
               }
             })
           }

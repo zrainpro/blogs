@@ -36,6 +36,8 @@ _axios.interceptors.response.use(
     if (data.code !== 200) {
       // 如果没有登录跳转到登录
       if (data.code === 600) {
+        window.sessionStorage.removeItem('user');
+        Element.Message.error('尚未登录');
         window.location.href = '/login';
       }
       Vue.prototype.$global.loading && (Vue.prototype.$global.loading = false)

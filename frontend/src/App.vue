@@ -3,6 +3,7 @@
     <transition>
       <router-view />
     </transition>
+    <div id="asd"></div>
   </div>
 </template>
 
@@ -13,6 +14,9 @@ export default {
   data() {
     return {
     }
+  },
+  mounted() {
+    console.log(document.getElementById('content'))
   }
 }
 </script>

@@ -40,7 +40,7 @@
 <style lang="less">
   .page404 {
     width: 100%;
-    height: 600px;
+    height: 480px;
     background-position: top;
     background-repeat: no-repeat;
     display: flex;
@@ -52,8 +52,10 @@
   }
   .one404 {
     background-image: url("../assets/4041.png");
+    background-size: 600px;
   }
   .two404 {
     background-image: url("../assets/4042.png");
+    background-size: 600px;
   }
 </style>

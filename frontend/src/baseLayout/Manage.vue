@@ -1,0 +1,158 @@
+<template>
+  <div class="manage">
+    <div class="layout">
+      <div class="logo">
+        后台
+      </div>
+      <div class="menu">
+        <router-link
+          v-for="(item, index) in menu"
+          :key="index"
+          :class="`menu-item ${$route.path === item.route ? 'menu-focus' : ''}`"
+          :to="item.route"
+        >
+          {{item.name}}
+        </router-link>
+      </div>
+    </div>
+    <div class="content">
+      <div class="topbar">
+        <div>
+          <router-link to="/" target="_blank">网站首页</router-link>
+        </div>
+        <div>
+          <el-dropdown @command="handleCommand">
+            <span class="el-dropdown-link">
+              {{userInfo.nickname}} 您好<i class="el-icon-arrow-down el-icon--right" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="loginout">退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </div>
+      <div class="router">
+        <transition>
+          <router-view />
+        </transition>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'manageLayout',
+  data() {
+    return {
+      menu: [
+        { name: '首页', route: '/manage/home' },
+        { name: '菜单管理', route: '/manage/menu' },
+        { name: '文章管理', route: '/manage/article' },
+        { name: '评论管理', route: '/manage/comment' },
+        { name: '友链管理', route: '/manage/link' }
+      ],
+      userInfo: {}
+    }
+  },
+  mounted() {
+    const userInfo = window.sessionStorage.getItem('user');
+    if (userInfo) {
+      try {
+        this.userInfo = JSON.parse(userInfo);
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  },
+  methods: {
+    handleCommand(command) {
+      if (command === 'loginout') {
+        this.loginout()
+      }
+    },
+    // 退出登录
+    loginout() {
+      this.apiPost('/api/loginout').then(res => {
+        if (res.code === 200) {
+          this.$message.success('登出成功');
+          this.$router.push('/');
+        }
+      })
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+@import url(../style/var.less);
+.manage {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  .layout {
+    width: 240px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #333;
+    color: #eee;
+    flex-shrink: 0;
+    .logo {
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+      font-size: 18px;
+      border-bottom: 1px solid #eee;
+    }
+    .menu {
+      overflow-y: auto;
+      flex: 1;
+      .menu-item {
+        display: block;
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        text-align: left;
+        padding-left: 20px;
+        &:hover {
+          background-color: #666;
+        }
+      }
+      .menu-focus {
+        background-color: #666;
+        color: @link;
+      }
+    }
+  }
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100vh;
+    background-color: #e9e9e9;
+    .topbar {
+      height: 60px;
+      width: 100%;
+      background-color: #fff;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+    }
+    .router {
+      flex: 1;
+      width: calc(100% - 30px);
+      margin: 15px;
+      background-color: #fff;
+      overflow: auto;
+    }
+  }
+}
+</style>
