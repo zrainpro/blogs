@@ -15,8 +15,8 @@
           </el-form-item>
           <el-form-item label="头像">
             <div class="avatar-box">
-              <img :src="user.avatar" alt="" @click="showAvatar = !showAvatar">
-              <div v-if="showAvatar" class="avatar-list">
+              <img :src="user.avatar" alt="" @click="showChooseAvatar = !showChooseAvatar">
+              <div v-if="showChooseAvatar" class="avatar-list">
                 <div>
                   <img v-for="item in avatarList" :key="item" class="avatar-item" :src="item" alt="" @click="chooseAvatar(item)">
                 </div>
@@ -93,7 +93,8 @@
         ],
         show: false,
         showUser: true,
-        showAvatar: false
+        showAvatar: false,
+        showChooseAvatar: false
       }
     },
     mounted () {

@@ -18,7 +18,8 @@ module.exports = {
     'vue/mustache-interpolation-spacing': 'off',
     'vue/order-in-components': 'off',
     'vue/name-property-casing': 'off',
-    'no-new': 'off'
+    'no-new': 'off',
+    'object-property-newline': 'off'
   },
   parserOptions: {
     parser: 'babel-eslint'

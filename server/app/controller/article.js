@@ -58,25 +58,35 @@ class UserController extends Controller {
     }
     ctx.body = result;
   }
+  // 获取所有文章
+  async getListAll() {
+    await this.getList(false);
+  }
   // 获取文章列表
-  async getList() {
+  async getList(viewer) {
     const { ctx } = this;
-    const params = ctx.query;
-    const page = params.page || 1;
-    const limit = params.limit || 10;
+    const params = { ...ctx.query, ...ctx.request.body };
+    const page = parseInt(params.page) || 1;
+    const limit = parseInt(params.limit) || 10;
+    const disab = parseInt(params.disabled) || 0;
     let skipNum = (page - 1) * limit;
     skipNum < 0 && (skipNum = 0);
-    const find = { disabled: 0 };
+    const disabled = viewer ? { disabled: 0 } : (disab === 2 ? {} : { disabled: disab });
+    const find = { ...disabled };
+    // 获取分类数据
+    const category = await ctx.model.Category.find({ ...disabled });
     // 分类查询
     if (params.category) {
-      const category = await ctx.model.Category.find({ disabled: 0 });
       find.category = {
         $in: category.filter(item => String(item._id) === params.category || String(item.pid) === params.category).map(item => item._id),
       };
     }
     // 关键字搜索
     if (params.keyword) {
-      find.$where = `this.title.includes(${params.keyword}) || this.content.includes(${params.keyword})`;
+      find.$or = [
+        { title: { $regex: params.keyword } },
+        { content: { $regex: params.keyword } },
+      ];
     }
     // 标签搜索
     if (params.tag) {
@@ -86,8 +96,18 @@ class UserController extends Controller {
       .sort({ updateTime: -1 })
       .skip(skipNum)
       .limit(limit)
-      .select(this.selectKeys.replace('content', ''));
-    ctx.body = result;
+      .select(this.selectKeys.replace('content', '') + ' disabled');
+    const total = await ctx.model.Article.find(find).count();
+    ctx.body = {
+      self: true,
+      data: JSON.parse(JSON.stringify(result)).map(item => ({
+        ...item,
+        category: category.find(it => String(it._id) === String(item.category)),
+      })),
+      page,
+      limit,
+      total,
+    };
   }
   // 点赞文章
   async likeArticle() {
@@ -113,6 +133,19 @@ class UserController extends Controller {
     const result = await ctx.model.Article.update({
       _id: id,
     }, { $inc: { dislike: params.off ? -1 : 1 } });
+    ctx.body = result;
+  }
+  // 启用/禁用 文章
+  async disabledArticle() {
+    const { ctx } = this;
+    const id = ctx.params.id;
+    if (!id) {
+      ctx.throw('文章不存在');
+    }
+    const params = ctx.request.body;
+    const result = await ctx.model.Article.update({
+      _id: id,
+    }, { disabled: params.disabled });
     ctx.body = result;
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="menu">
-    <h1 class="title">菜单管理</h1>
+    <h1 class="manage-title">菜单管理</h1>
     <div>
       <el-button type="primary" plain size="small" @click="addMenu()">追加</el-button>
       <el-button type="success" plain size="small" @click="save()">保存</el-button>
@@ -129,12 +129,6 @@ export default {
 .menu {
   text-align: left;
   padding: 15px;
-  h1.title {
-    font-size: 18px;
-    padding-left: 15px;
-    border-left: 4px solid @link;
-    margin-bottom: 20px;
-  }
   .menu-box {
     margin-top: 20px;
     padding: 20px;

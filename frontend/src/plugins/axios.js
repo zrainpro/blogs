@@ -70,12 +70,17 @@ Plugin.install = function(Vue, options) {
     },
     apiGet: {
       get () {
-        return _axios.get
+        return _axios.get;
       }
     },
     apiPost: {
       get () {
-        return _axios.post
+        return _axios.post;
+      }
+    },
+    apiDelete: {
+      get () {
+        return _axios.delete;
       }
     }
   });

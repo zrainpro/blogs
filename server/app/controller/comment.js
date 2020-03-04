@@ -7,13 +7,49 @@ const {
 } = require('../utils');
 
 class UserController extends Controller {
+  // 后台获取评论列表
+  async getCommentsAll() {
+    const { ctx } = this;
+    const params = ctx.request.body;
+    const find = {};
+    if (params.article) {
+      find.article = params.article;
+    }
+    if (typeof params.disabled !== 'undefined' && params.disabled !== 2) {
+      find.disabled = parseInt(params.disabled);
+    }
+    if (params.keyword) {
+      find.$where = `this.content.includes(${params.keyword})`;
+    }
+    const page = params.page || 1;
+    const limit = params.limit || 10;
+    let skipNum = (page - 1) * limit;
+    skipNum < 0 && (skipNum = 0);
+    // 评论内容
+    const result = await ctx.model.Comment.find(find)
+      .sort({ updateTime: -1 })
+      .skip(skipNum)
+      .limit(limit);
+    const total = await ctx.model.Comment.find(find).count(); // 总数
+    // 文章信息
+    const article = await ctx.model.Article.find({
+      _id: { $in: result.map(_ => _.article) },
+    });
+    ctx.body = {
+      self: true,
+      data: result.map(_ => ({ ..._._doc, article: article.find(__ => String(_.article) === String(__._id)) })),
+      page,
+      limit,
+      total,
+    };
+  }
   // 获取文章的评论列表
   async getComments() {
     const { ctx } = this;
     const params = ctx.query;
     const selectKeys = 'article nickname avatar email blog content like dislike pid updateTime createTime';
-    const limit = params.limit || 10; // 默认取10条数据
-    let skipNum = ((params.page || 1) - 1) * limit; // 从多少条开始获取数据, 用于分页
+    const limit = parseInt(params.limit) || 10; // 默认取10条数据
+    let skipNum = ((parseInt(params.page) || 1) - 1) * limit; // 从多少条开始获取数据, 用于分页
     skipNum < 0 && (skipNum = 0); // 不能为负数
     const articleId = ctx.params.id;
     if (!articleId) {
@@ -120,6 +156,31 @@ class UserController extends Controller {
       _id: id,
     }, { $inc: { dislike: params.off ? -1 : 1 } });
     ctx.body = result;
+  }
+  // 批量启用 / 禁用评论
+  async enabledComment() {
+    const { ctx } = this;
+    const params = ctx.request.body;
+    const comments = params.comments;
+    const code = params.code === 0 ? 0 : 1;
+    const result = await ctx.model.Comment.update({
+      $or: [
+        { _id: { $in: comments } },
+        { rootPid: { $in: comments } },
+      ],
+    }, { disabled: code });
+    ctx.body = result;
+  }
+  // 批量删除评论
+  async deleteComment() {
+    const { ctx } = this;
+    const params = ctx.request.body;
+    ctx.body = await ctx.model.Comment.remove({
+      $or: [
+        { _id: { $in: params } },
+        { rootPid: { $in: params } },
+      ],
+    });
   }
 }
 
