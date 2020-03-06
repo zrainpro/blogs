@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeLayout from '../baseLayout/Frontend.vue'; // 首页layout
+import Base from '../baseLayout/base'; // router-view
 import Article from '../views/Article'; // 文章页
 import Category from '../views/Category'; // 分类文章
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
@@ -30,8 +31,26 @@ const routes = [
       },
       {
         path: '/manage/article',
+        redirect: '/manage/article/lists',
         name: '文章管理',
-        component: () => import('../views/manage/Article.vue') // 文章管理
+        component: Base, // 文章管理
+        children: [
+          {
+            path: '/manage/article/lists',
+            name: '文章管理',
+            component: () => import('../views/manage/Article.vue') // 文章管理
+          },
+          {
+            path: '/manage/article/create',
+            name: '创建文章',
+            component: () => import('../views/manage/EditArticle') // 创建文章
+          },
+          {
+            path: '/manage/article/:id',
+            name: '编辑文章',
+            component: () => import('../views/manage/EditArticle') // 编辑文章
+          }
+        ]
       },
       {
         path: '/manage/comment',

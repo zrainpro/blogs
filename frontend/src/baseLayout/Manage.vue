@@ -8,7 +8,7 @@
         <router-link
           v-for="(item, index) in menu"
           :key="index"
-          :class="`menu-item ${$route.path === item.route ? 'menu-focus' : ''}`"
+          :class="`menu-item ${$route.path.includes(item.route) ? 'menu-focus' : ''}`"
           :to="item.route"
         >
           {{item.name}}

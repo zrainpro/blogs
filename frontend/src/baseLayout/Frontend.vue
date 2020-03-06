@@ -81,13 +81,7 @@ export default {
       }
     })
     // 导航条动画
-    document.body.onscroll = () => {
-      if (window.pageYOffset > 100) {
-        this.$refs.nav.className = 'scroll-height'
-      } else {
-        this.$refs.nav.className = ''
-      }
-    }
+    document.addEventListener('scroll', this.scrollEvent)
     // 注册获取背景事件
     this.$onComponentMethod('changeTheme', {
       handler: this.changeTheme.bind(this)
@@ -103,6 +97,10 @@ export default {
         ]
       })
     })
+  },
+  destroyed () {
+    // 注销滚动事件
+    document.removeEventListener('scroll', this.scrollEvent)
   },
   methods: {
     // 获取菜单
@@ -174,6 +172,14 @@ export default {
         console.log(e)
         this.$global.loading = false;
       })
+    },
+    // 滚动事件
+    scrollEvent() {
+      if (window.pageYOffset > 100) {
+        this.$refs.nav.className = 'scroll-height'
+      } else {
+        this.$refs.nav.className = ''
+      }
     }
   }
 }

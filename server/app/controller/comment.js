@@ -5,7 +5,7 @@ const {
   checkEmpty,
   checkSave,
 } = require('../utils');
-
+// todo 建立一个评论用户表,依据邮箱进行判别,保存头像信息,判断是否是同一个评论用户.
 class UserController extends Controller {
   // 后台获取评论列表
   async getCommentsAll() {

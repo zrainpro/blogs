@@ -5,7 +5,7 @@
     <div class="search">
       <CreateForm label-width="80px" :data-source="searchForm" @onOk="handleOk">
         <template slot="btn">
-          <el-button size="small">写文章</el-button>
+          <el-button size="small" @click="$router.push('/manage/article/create')">写文章</el-button>
         </template>
       </CreateForm>
     </div>
