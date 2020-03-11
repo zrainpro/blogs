@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="edit-article">
     编辑器
     <Editor />
   </div>
@@ -13,6 +13,8 @@
   }
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
+.edit-article {
+  padding: 20px;
+}
 </style>

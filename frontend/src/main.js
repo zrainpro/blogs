@@ -1,12 +1,13 @@
-import Vue from 'vue'
-import './plugins/axios'
-import App from './App.vue'
-import './registerServiceWorker'
-import router from './router'
-import store from './store'
-import './style/init.less'
-import './plugins/element.js'
-import './plugins/storeData.js'
+import Vue from 'vue';
+import './plugins/axios';
+import App from './App.vue';
+import './registerServiceWorker';
+import router from './router';
+import store from './store';
+import './style/init.less';
+import './plugins/element.js';
+import './plugins/storeData.js';
+import './plugins/dom.js';
 import Icon from './components/Icon';
 
 Vue.component('icon', Icon);
