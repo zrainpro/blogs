@@ -10,6 +10,7 @@ module.exports = app => {
     intro: { type: String, default: '' }, // 文章简介, 默认提取内容纯文字前 100 字
     tag: { type: String, default: '' }, // 文章所属标签
     content: { type: String, default: '' }, // 文章内容
+    preserve: { type: String, default: '' }, // 暂存文章内容,用于编辑模式
     disabled: { type: Number, default: 0 }, // 是否禁用 1/禁用 | 0/不禁用
     category: { type: String }, // 文章分类, 所属目录
     view: { type: Number, default: 0 }, // 阅读量

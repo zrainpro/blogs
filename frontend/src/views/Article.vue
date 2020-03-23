@@ -5,7 +5,7 @@
       <span>{{moment(info.createTime).format('HH时mm分·MM月DD日·YYYY年')}}</span>
       <span>{{moment(info.updateTime).format('HH时mm分·MM月DD日·YYYY年')}}修改</span>
     </div>
-    <div v-html="info.content"></div>
+    <Editor class="editor" readonly :value="info.content" />
     <div class="article-tag">
       <span style="margin-right: 10px">文章标签: </span>
       <span v-for="item in (info.tag || '').split(',')" :key="item" class="tag">{{item}}</span>
@@ -29,7 +29,7 @@
                    @dislike="handleDislikeComment"
                    @reply="replayArticle($event, { pid: item._id, rootPid: item._id })"
       >
-        <div class="comment-children" v-if="item.children && item.children.length">
+        <div v-if="item.children && item.children.length" class="comment-children">
           <CommentItem v-for="it in item.children"
                        :key="it._id"
                        :detail="it"
@@ -47,11 +47,13 @@
   import moment from 'moment';
   import CommentItem from '../components/CommentItem';
   import Reply from '../components/Reply';
+  import Editor from '../components/Editor';
   export default {
     name: 'Article',
     components: {
       CommentItem,
-      Reply
+      Reply,
+      Editor
     },
     data() {
       return {
@@ -172,6 +174,10 @@
     /* 标签 */
     .article-tag {
       margin-top: 30px;
+    }
+    /* 正文相关 */
+    .editor {
+      margin-top: 20px;
     }
     /* 点赞相关 */
     .mark {

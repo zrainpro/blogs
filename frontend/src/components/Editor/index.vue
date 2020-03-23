@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <div ref="editor" contenteditable="true" class="editor" />
-  </div>
+  <div ref="editor" class="editor" />
 </template>
 
 <script>
@@ -9,6 +7,16 @@
 
   export default {
     name: 'editor',
+    props: {
+      readonly: {
+        type: Boolean,
+        default: false
+      },
+      value: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       return {
         form: '',
@@ -22,13 +30,76 @@
           { text: '>\\s', tagName: 'blockquote', createTag: true, desc: 'H6' }
         ],
         monaco: {}, // 保存 monaco editor 实例
+        throttle: false, // window 的 resize 节流用到
         lineTagName: 'p' // 行元素的标签名
       }
     },
     mounted () {
+      // 设置是否只读
+      if (!this.readonly) {
+        this.$refs.editor.setAttribute('contenteditable', 'true')
+      } else {
+        this.$refs.editor.setAttribute('style', 'padding-left: 0'); // 只读状态取消padding
+      }
+      // 初始化编辑器
       this.initEditor();
+      // 为编辑器设置 resize 监听
+      this.onresize = () => {
+        if (!this.throttle) {
+          this.throttle = true;
+          window.requestAnimationFrame(() => {
+            this.throttle = false;
+            Object.keys(this.monaco).forEach(it => {
+              this.monaco[it].layout();
+            })
+          })
+        }
+      }
+      window.addEventListener('resize', this.onresize)
+    },
+    destroyed () {
+      window.removeEventListener('resize', this.onresize);
+    },
+    watch: {
+      value() {
+        if (this.readonly) {
+          this.setValue(this.value); // 只在只读状态采用 value 的值
+        }
+      }
     },
     methods: {
+      // 获取编辑器的代码
+      getValue() {
+        const clone = this.$refs.editor.cloneNode(true);
+        for (let item of clone.childNodes) {
+          if (item.getAttribute('class')?.includes('code-editor')) {
+            const pre = document.createElement('pre');
+            const id = item.getAttribute('id');
+            pre.innerHTML = this.monaco[id]?.getValue();
+            // 给标签设置语言标记
+            pre.setAttribute('language', this.monaco[id]?.getModel()?.getLanguageIdentifier()?.language);
+            clone.insertBefore(pre, item); // 插入 pre 标签
+            clone.removeChild(item); // 删除编辑器标签
+          }
+        }
+        return clone.innerHTML;
+      },
+      setValue(value) {
+        // 先清空当前内容
+        Object.keys(this.monaco).forEach(it => {
+          this.monaco[it].destroy();
+        })
+        this.monaco = {};
+        this.$refs.editor.innerHTML = value;
+        // 处理新的节点内容
+        for (let item of this.$refs.editor.childNodes) {
+          // 对代码特殊处理
+          if (item.tagName === 'PRE') {
+            this.createMonaco(item, item.getAttribute('language'), item.innerHTML);
+          }
+        }
+      },
+      // 初始化编辑器
       initEditor() {
         this.$refs.editor.appendChild(this.createLineElement()); // 写入初始代码
         // 更改默认换行标签, 统一不同浏览器的行为
@@ -53,13 +124,13 @@
             this.$refs.editor.appendChild(this.createLineElement()); // 插入初始代码
             return;
           }
-          console.log(mutationList);
+          // console.log(mutationList);
           for (let mutation of mutationList) {
             // 文本节点改动
             if (mutation.type === 'characterData') {
               // 超出最长快捷键长度退出
               //  && mutation.target.parentElement?.tagName === this.lineTagName.toUpperCase()
-              if (mutation.target.textContent.length > 15) { continue; }
+              if (mutation.target.textContent.length > 15 || !mutation.target) { continue; }
               // 便利快捷键,找出符合的快捷键
               const codes = this.hotKeys.find(_ => new RegExp(`^${_.text}`).test(mutation.target.textContent));
               if (!codes) { continue; }
@@ -70,6 +141,7 @@
               this.$refs.editor.removeChild(mutation.target.parentElement); // 移除原标签
             } else if (mutation.type === 'childList') {
               // 判断变更节点是引用的节点,删除的时候退出 blockquote 标签并插入一行新的
+              // todo bug 第一行为空白时无法删除标签
               if (mutation.target.nodeName === 'BLOCKQUOTE' && Array.prototype.find.call(mutation.removedNodes, _ => _.nodeName.toLowerCase() === this.lineTagName)) {
                 // 如果删除 b
                 const tempInsert = this.createLineElement();
@@ -98,22 +170,51 @@
       },
       // 处理 monaco-editor
       detailMonaco(mutation) {
+        const language = mutation.previousSibling.innerText.replace('```', '');
+        this.createMonaco(mutation.previousSibling, language)
+      },
+      // 创建 monaco-editor
+      createMonaco(target, language = 'javascript', value) {
         const id = window.btoa(new Date().getTime());
-        const language = mutation.previousSibling.innerText.replace('```', '') || 'javascript';
         const box = document.createElement('div');
         box.setAttribute('id', id);
         box.setAttribute('class', 'code-editor');
         box.setAttribute('contenteditable', 'false');
         box.tabIndex = Object.keys(this.monaco).length; // 使 focus 事件生效
-        const selectLanguage = document.createElement('div');
-        selectLanguage.setAttribute('class', 'code-editor-language');
-        const languages = monaco.languages.getLanguages();
-        const selectItem = this.createSelect(languages.map(_ => ({ label: _.id, value: _.id })), language); // 创建 select 选择器
-        selectItem.oninput = (target) => {
-          monaco.editor.setModelLanguage(this.monaco[id].getModel(), target.value); // 更改语言
+        // 操作按钮的数据
+        const operationJSON = {
+          copy: {
+            class: 'editor-operation-btn editor-operation-copy',
+            eventName: 'mousedown',
+            listener: () => {
+              window.copyText(this.monaco[id].getValue()); // 复制
+              // todo 向外提供复制成功的api;
+            }
+          },
+          delete: {
+            class: 'editor-operation-btn editor-operation-delete',
+            eventName: 'mousedown',
+            listener: () => {
+              delete this.monaco[id]; // 删除编辑器的数据
+              this.$refs.editor.removeChild(box); // 移除编辑器
+            }
+          }
         }
-        selectLanguage.appendChild(selectItem);
-        box.appendChild(selectLanguage);
+        // 只读状态取消某些功能
+        if (!this.readonly) {
+          // 语言选择修改框
+          const selectLanguage = document.createElement('div');
+          selectLanguage.setAttribute('class', 'code-editor-language');
+          const languages = monaco.languages.getLanguages();
+          const selectItem = this.createSelect(languages.map(_ => ({ label: _.id, value: _.id })), language); // 创建 select 选择器
+          selectItem.oninput = (it) => {
+            monaco.editor.setModelLanguage(this.monaco[id].getModel(), it.value); // 更改语言
+          }
+          selectLanguage.appendChild(selectItem);
+          box.appendChild(selectLanguage);
+          // 只读状态取消删除按钮
+          delete operationJSON.delete;
+        }
         // monaco 编辑器
         const monacoBox = document.createElement('div');
         monacoBox.setAttribute('style', 'height: 200px; min-height: 30px;');
@@ -144,26 +245,29 @@
         // 删除复制
         const operation = document.createElement('div'); // 操作盒子
         operation.setAttribute('class', 'editor-operation');
-        const operationDelete = document.createElement('div'); // 删除按钮
-        operationDelete.setAttribute('class', 'editor-operation-btn editor-operation-delete');
-        const operationCopy = document.createElement('div'); // 复制按钮
-        operationCopy.setAttribute('class', 'editor-operation-btn editor-operation-copy');
-        operation.appendChild(operationCopy);
-        operation.appendChild(operationDelete);
+        Object.entries(operationJSON).forEach(([key, item]) => {
+          const temp = document.createElement('div'); // 按钮容器
+          temp.setAttribute('class', item.class); // 设置样式
+          temp.addEventListener(item.eventName, item.listener); // 设置事件
+          operation.appendChild(temp); // 放到容器里面
+        })
         box.appendChild(operation);
-        box.onfocus = function () {
-          console.log(1111);
-        }
-        box.onblur = function () {
-          console.log(222)
-        }
-        this.$refs.editor.insertBefore(box, mutation.previousSibling); // 插入代码编辑器容器
-        this.$refs.editor.removeChild(mutation.previousSibling); // 清除原标签
+        this.$refs.editor.insertBefore(box, target); // 插入代码编辑器容器
+        this.$refs.editor.insertBefore(this.createLineElement(), box); // 在编辑器前面插入一行空行
+        this.$refs.editor.removeChild(target); // 清除原标签
         this.monaco[id] = monaco.editor.create(monacoBox, {
           language: language,
           tabSize: 2,
-          theme: 'vs-dark'
+          value,
+          theme: 'vs-dark',
+          readOnly: this.readonly
         });
+        this.monaco[id].onDidFocusEditorText(function () {
+          operation.setAttribute('style', 'display: flex');
+        }); // focus 时显示操作按钮
+        this.monaco[id].onDidBlurEditorText(() => {
+          operation.setAttribute('style', 'display: none');
+        }); // blur 时隐藏操作按钮
       },
       // 创建 select 选择器
       createSelect(options, defaultValue) {
@@ -232,13 +336,12 @@
 .editor {
   padding-left: 40px;
   text-align: left;
-  height: 300px;
+  min-height: 300px;
   color: #262626;
   line-height: 1.74;
   outline-style: none;
   word-break: break-word;
   letter-spacing: 0.05em;
-  background-color: #ffffff;
   box-sizing: border-box;
   /deep/ * {
     transition: all 0ms !important;
@@ -361,11 +464,11 @@
       cursor: row-resize;
     }
     .editor-operation {
+      display: none;
       position: absolute;
       top: -45px;
       left: 0;
       padding: 5px;
-      display: flex;
       flex-direction: row;
       background-color: #ffffff;
       border: 1px solid #e8e8e8;
@@ -377,6 +480,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
       &:hover {
         background-color: #e8e8e8;
       }

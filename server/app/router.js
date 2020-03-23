@@ -25,7 +25,9 @@ module.exports = app => {
   router.post('/comment/delete', controller.comment.deleteComment); // 批量深处评论
   // 文章
   router.post('/article/patch', controller.article.patchArticle); // 创建修改文章
+  router.post('/article/preserve', controller.article.keepArticle); // 暂存文章
   router.get('/article/:id/detail', controller.article.getDetail); // 获取文章详情
+  router.get('/article/:id/back/detail', controller.article.getBackDetail); // 获取文章详情
   router.get('/article/list', controller.article.getList); // 获取文章列表
   router.post('/article/list/all', controller.article.getListAll); // 获取所有文章列表, 包含被禁用的
   router.post('/article/:id/like', controller.article.likeArticle); // 点赞文章

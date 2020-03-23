@@ -29,6 +29,7 @@ class UserController extends Controller {
       intro: params.intro || sliceText(params.content, 100),
       tag: params.tag,
       content: params.content,
+      preserve: params.content,
       disabled: 0,
       category: params.category,
       updateTime: new Date().getTime(),
@@ -46,6 +47,30 @@ class UserController extends Controller {
       ctx.body = result;
     }
   }
+  // 暂存文章
+  async keepArticle() {
+    const { ctx } = this;
+    const params = ctx.request.body;
+    // 保存文章
+    const saveParams = {
+      title: params.title,
+      topicImg: params.topicImg,
+      tag: params.tag,
+      preserve: params.preserve,
+      category: params.category,
+    };
+    if (params.id) {
+      // 修改文章
+      const result = await ctx.model.Article.findOneAndUpdate({
+        _id: params.id,
+      }, { $set: { ...saveParams } });
+      ctx.body = result;
+    } else {
+      // 新建文章
+      const result = await ctx.model.Article.create({ ...saveParams, disabled: 1 });
+      ctx.body = result;
+    }
+  }
   // 获取文章详情
   async getDetail() {
     const { ctx } = this;
@@ -53,6 +78,18 @@ class UserController extends Controller {
     const result = await ctx.model.Article.findOneAndUpdate({
       _id: articleId,
     }, { $inc: { view: 1 } }).select(this.selectKeys);
+    if (!result) {
+      ctx.throw('文章不存在');
+    }
+    ctx.body = result;
+  }
+  // 后台获取文章详情
+  async getBackDetail() {
+    const { ctx } = this;
+    const articleId = ctx.params.id;
+    const result = await ctx.model.Article.findOne({
+      _id: articleId,
+    }).select(this.selectKeys + ' preserve');
     if (!result) {
       ctx.throw('文章不存在');
     }
@@ -68,7 +105,7 @@ class UserController extends Controller {
     const params = { ...ctx.query, ...ctx.request.body };
     const page = parseInt(params.page) || 1;
     const limit = parseInt(params.limit) || 10;
-    const disab = parseInt(params.disabled) || 0;
+    const disab = parseInt(params.disabled) || 2;
     let skipNum = (page - 1) * limit;
     skipNum < 0 && (skipNum = 0);
     const disabled = viewer ? { disabled: 0 } : (disab === 2 ? {} : { disabled: disab });

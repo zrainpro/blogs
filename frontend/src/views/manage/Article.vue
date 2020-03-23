@@ -11,11 +11,15 @@
     </div>
     <!-- 文章列表 -->
     <el-table :data="lists">
-      <el-table-column label="标题" prop="title" />
+      <el-table-column label="标题" prop="title">
+        <template slot-scope="scope">
+          <router-link :to="`/manage/article/${scope.row._id}`">{{scope.row.title}}</router-link>
+        </template>
+      </el-table-column>
       <el-table-column label="分类" prop="categoryName" width="80" />
       <el-table-column label="标签" prop="tag">
         <template slot-scope="scope">
-          <span v-for="item in scope.row.tag.split(',')" :key="item" class="tag">{{item}}</span>
+          <span v-for="item in (scope.row.tag || '').split(',')" :key="item" class="tag">{{item}}</span>
         </template>
       </el-table-column>
       <el-table-column label="是否禁用" prop="disabled" width="140">
