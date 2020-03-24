@@ -10,6 +10,8 @@ module.exports = app => {
   router.post('/login', controller.user.login); // 登录
   router.post('/loginout', controller.user.loginout); // 登出
   router.post('/user/modify', controller.user.updateUserInfo); // 修改用户信息
+  router.get('/needinit', controller.user.needInit); // 是否需要初始化
+  router.post('/init', controller.user.init); // 初始化系统
   // 分类目录
   router.get('/category/list', controller.category.getList); // 获取分类目录
   router.get('/category/list/all', controller.category.getAllList); // 获取全部分类

@@ -367,6 +367,14 @@
     "@babel/helper-plugin-utils" "^7.8.3"
     "@babel/plugin-syntax-optional-chaining" "^7.8.0"
 
+"@babel/plugin-proposal-optional-chaining@^7.9.0":
+  version "7.9.0"
+  resolved "https://registry.npm.taobao.org/@babel/plugin-proposal-optional-chaining/download/@babel/plugin-proposal-optional-chaining-7.9.0.tgz?cache=0&sync_timestamp=1584718601089&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fplugin-proposal-optional-chaining%2Fdownload%2F%40babel%2Fplugin-proposal-optional-chaining-7.9.0.tgz#31db16b154c39d6b8a645292472b98394c292a58"
+  integrity sha1-MdsWsVTDnWuKZFKSRyuYOUwpKlg=
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.8.3"
+    "@babel/plugin-syntax-optional-chaining" "^7.8.0"
+
 "@babel/plugin-proposal-unicode-property-regex@^7.8.3":
   version "7.8.3"
   resolved "https://registry.npm.taobao.org/@babel/plugin-proposal-unicode-property-regex/download/@babel/plugin-proposal-unicode-property-regex-7.8.3.tgz#b646c3adea5f98800c9ab45105ac34d06cd4a47f"
@@ -7453,10 +7461,10 @@ regexpu-core@^4.6.0:
     unicode-match-property-ecmascript "^1.0.4"
     unicode-match-property-value-ecmascript "^1.1.0"
 
-register-service-worker@^1.6.2:
-  version "1.6.2"
-  resolved "https://registry.npm.taobao.org/register-service-worker/download/register-service-worker-1.6.2.tgz#9297e54c205c371c6e49bfa88f6997e8dd315f4c"
-  integrity sha1-kpflTCBcNxxuSb+oj2mX6N0xX0w=
+register-service-worker@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.npm.taobao.org/register-service-worker/download/register-service-worker-1.7.1.tgz#6308347ac6c0af0f6c0b22ea5d59d25e836bc932"
+  integrity sha1-Ywg0esbArw9sCyLqXVnSXoNryTI=
 
 regjsgen@^0.5.0:
   version "0.5.1"
@@ -9000,10 +9008,10 @@ vue@^2.6.11:
   resolved "https://registry.npm.taobao.org/vue/download/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha1-dllNh31LEiNEBuhONSdcbVFBJcU=
 
-vuex@^3.0.1:
-  version "3.1.2"
-  resolved "https://registry.npm.taobao.org/vuex/download/vuex-3.1.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvuex%2Fdownload%2Fvuex-3.1.2.tgz#a2863f4005aa73f2587e55c3fadf3f01f69c7d4d"
-  integrity sha1-ooY/QAWqc/JYflXD+t8/AfacfU0=
+vuex@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.npm.taobao.org/vuex/download/vuex-3.1.3.tgz#f2ad73e3fb73691698b38c93f66e58e267947180"
+  integrity sha1-8q1z4/tzaRaYs4yT9m5Y4meUcYA=
 
 watchpack@^1.6.0:
   version "1.6.0"

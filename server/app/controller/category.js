@@ -46,9 +46,9 @@ class CategoryController extends Controller {
     ctx.body = result;
   }
   // 添加/修改分类数据
-  async insertCategory() {
+  async insertCategory(query) {
     const { ctx } = this;
-    const params = ctx.request.body;
+    const params = ctx.request.body || query;
     const checkEmptyKeys = [
       { key: 'category', message: '分类数据不能为空' },
     ];

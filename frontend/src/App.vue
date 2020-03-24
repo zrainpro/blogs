@@ -13,6 +13,13 @@ export default {
   data() {
     return {
     }
+  },
+  created() {
+    this.apiGet('/api/needinit').then(res => {
+      if (res.code === 200 && res.data) {
+        this.$router.replace('/init'); // 跳转到初始化页面
+      }
+    })
   }
 }
 </script>

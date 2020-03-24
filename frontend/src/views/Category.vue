@@ -47,6 +47,7 @@
         this.$global.loading = true; // 开启加载动画
         this.$safeEmitComponentMethod('changeTheme')
         this.$parseRouter().then(menu => {
+          console.log(menu);
           const params = {};
           menu && (params.category = menu.id);
           this.apiGet('/api/article/list', { params }).then(res => {

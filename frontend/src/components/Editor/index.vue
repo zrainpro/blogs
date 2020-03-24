@@ -27,7 +27,7 @@
           { text: '###\\s', tagName: 'h3', desc: 'H6' },
           { text: '##\\s', tagName: 'h2', desc: 'H6' },
           { text: '#\\s', tagName: 'h1', desc: 'H6' },
-          { text: '>\\s', tagName: 'blockquote', createTag: true, desc: 'H6' }
+          { text: '>\\s', ecode: '&gt;', tagName: 'blockquote', createTag: true, desc: 'H6' }
         ],
         monaco: {}, // 保存 monaco editor 实例
         throttle: false, // window 的 resize 节流用到
@@ -118,6 +118,8 @@
         // todo 在 monaco-editor 中取消监听dom节点变化,节省性能;
         const config = { childList: true, subtree: true, characterData: true };
         const observer = new MutationObserver((mutationList) => {
+          console.log(mutationList);
+          this.domchanged = mutationList; // 记录当前按键更改的 dom
           // observer.takeRecords();
           // 控制里面字符不能为空
           if (!this.$refs.editor.innerHTML || this.$refs.editor.innerHTML.replace(' ', '') === '<br>') {
@@ -130,19 +132,23 @@
             if (mutation.type === 'characterData') {
               // 超出最长快捷键长度退出
               //  && mutation.target.parentElement?.tagName === this.lineTagName.toUpperCase()
-              if (mutation.target.textContent.length > 15 || !mutation.target) { continue; }
+              // todo 既能随时监测关键字又能不浪费性能 mutation.target.textContent.length > 15 ||  文字
+              if (!mutation.target) { continue; }
               // 便利快捷键,找出符合的快捷键
               const codes = this.hotKeys.find(_ => new RegExp(`^${_.text}`).test(mutation.target.textContent));
               if (!codes) { continue; }
               // 如果触发的元素被删除提前退出
               if (!Array.prototype.find.call(this.$refs.editor.childNodes, _ => _ === mutation.target.parentElement)) { continue; }
               // 写入标签
-              this.$refs.editor.insertBefore(this.createLineElement(codes.tagName, codes.createTag ? this.createLineElement() : false), mutation.target.parentElement);
+              const insertDom = this.createLineElement(codes.tagName, codes.createTag ? this.createLineElement() : false);
+              const oldText = mutation.target.parentElement.innerText.replace(new RegExp(codes.text), '');
+              oldText && (insertDom.innerHTML = oldText);
+              window.insertAfter(mutation.target.parentElement, insertDom, this.$refs.editor); // 在目标标签之后插入
               this.$refs.editor.removeChild(mutation.target.parentElement); // 移除原标签
             } else if (mutation.type === 'childList') {
               // 判断变更节点是引用的节点,删除的时候退出 blockquote 标签并插入一行新的
               // todo bug 第一行为空白时无法删除标签
-              if (mutation.target.nodeName === 'BLOCKQUOTE' && Array.prototype.find.call(mutation.removedNodes, _ => _.nodeName.toLowerCase() === this.lineTagName)) {
+              if (this.keyCode === 8 && mutation.target.nodeName === 'BLOCKQUOTE' && Array.prototype.find.call(mutation.removedNodes, _ => _.nodeName.toLowerCase() === this.lineTagName)) {
                 // 如果删除 b
                 const tempInsert = this.createLineElement();
                 window.insertAfter(mutation.target, tempInsert, this.$refs.editor);
@@ -150,13 +156,13 @@
                 continue;
               }
               // 如果是编辑器根节点删除非 标准行标签, 插入标准行标签
-              if (mutation.target === this.$refs.editor && Array.prototype.find.call(mutation.removedNodes, _ => _.nodeName.toLowerCase() !== this.lineTagName)) {
+              if (this.keyCode === 8 && mutation.target === this.$refs.editor && Array.prototype.find.call(mutation.removedNodes, _ => _.nodeName.toLowerCase() !== this.lineTagName)) {
                 window.insertAfter(mutation.previousSibling, this.createLineElement(), this.$refs.editor);
                 this.pointNextLine(); // 光标移动到下一行
                 continue;
               }
               // 监听编辑器回车事件
-              if (mutation.target === this.$refs.editor && mutation.addedNodes.length) {
+              if (this.keyCode === 13 && mutation.target === this.$refs.editor) {
                 // console.log('触发回车事件的元素为: ', mutation.previousSibling);
                 // 判断是否为 添加编辑器事件
                 if (new RegExp('```\\s{0}').test(mutation.previousSibling?.innerText)) {
@@ -167,6 +173,19 @@
           }
         });
         observer.observe(this.$refs.editor, config);
+        // 记录当前按键的值,方便判断行为
+        this.$refs.editor.addEventListener('keydown', (event) => {
+          console.log(event);
+          this.keyCode = event.keyCode;
+          this.domchanged = false; // 重新标记 dom 为未改变状态
+        });
+        // todo 空标签按删除的时候会删除前面的标签, 想办法解决掉这个问题
+        this.$refs.editor.addEventListener('keyup', (event) => {
+          console.log(this.domchanged);
+          if (!this.domchanged && event.keyCode === 8) {
+            console.log('按下删除键但是没有删除元素')
+          }
+        });
       },
       // 处理 monaco-editor
       detailMonaco(mutation) {
@@ -314,6 +333,7 @@
       createLineElement(tagName = this.lineTagName, childrenElement) {
         const element = document.createElement(tagName);
         element.appendChild(childrenElement || document.createElement('br'));
+        element.setAttribute('class', '');
         return element;
       },
       // 光标移动到下一行

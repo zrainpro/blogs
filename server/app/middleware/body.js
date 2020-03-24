@@ -3,6 +3,8 @@
 const pathToRegexp = require('path-to-regexp');
 // 不需要登录的接口
 const skipRouter = [
+  '/init',
+  '/needinit',
   '/login',
   '/user/register',
   '/category/list',

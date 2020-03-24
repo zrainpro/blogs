@@ -9,6 +9,11 @@ Vue.use(VueRouter);
 
 const routes = [
   {
+    path: '/init',
+    name: '初始化',
+    component: () => import('../views/Init.vue') // 初始化
+  },
+  {
     path: '/login',
     name: '登录',
     component: () => import('../views/Login') // 登录页

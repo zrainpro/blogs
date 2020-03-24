@@ -7,6 +7,8 @@ const {
   checkSave,
 } = require('../utils');
 
+const CategoryController = require('./category');
+
 class UserController extends Controller {
   // constructor(props) {
   //   super(props);
@@ -101,6 +103,39 @@ class UserController extends Controller {
     // 检查是否保存成功
     await checkSave(result, ctx);
     ctx.body = 'success';
+  }
+  // 是否需要初始化
+  async needInit() {
+    const { ctx } = this;
+    const user = await ctx.model.User.find();
+    ctx.body = !user.length;
+  }
+  // 初始化系统
+  async init() {
+    // 注册用户
+    await this.register.call(this);
+    // 初始化菜单
+    const menu = [
+      { name: '杂文', address: 'essay' },
+      { name: '闲谈', address: 'chat' },
+      { name: '技术',
+        address: 'technology',
+        children: [
+          { name: 'WEB前端', address: 'front' },
+          { name: 'NodeJS', address: 'node' },
+          { name: '混合开发/小程序', address: 'micro' },
+          { name: '半导体技术', address: 'semiconductor' },
+        ],
+      },
+      { name: '操作系统', address: 'os' },
+      { name: '友情链接', address: 'blogroll', disabled: true },
+    ];
+    this.ctx.request.body = {
+      category: menu,
+    };
+    this.insertNewData = CategoryController.prototype.insertNewData;
+    await CategoryController.prototype.insertCategory.call(this);
+    this.ctx.body = 'success';
   }
 }
 
