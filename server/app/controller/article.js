@@ -99,6 +99,18 @@ class UserController extends Controller {
   async getListAll() {
     await this.getList(false);
   }
+  // 获取文章点赞点踩数
+  async getLike() {
+    const { ctx } = this;
+    const articleId = ctx.params.id;
+    const result = await ctx.model.Article.findOne({
+      _id: articleId,
+    }).select('like dislike title view');
+    if (!result) {
+      ctx.throw('文章不存在');
+    }
+    ctx.body = result;
+  }
   // 获取文章列表
   async getList(viewer) {
     const { ctx } = this;
@@ -150,27 +162,75 @@ class UserController extends Controller {
   async likeArticle() {
     const { ctx } = this;
     const id = ctx.params.id;
+    const ip = ctx.request.ip;
+    const params = ctx.request.body;
     if (!id) {
       ctx.throw('文章不存在');
     }
-    const params = ctx.request.body;
-    const result = await ctx.model.Article.update({
-      _id: id,
-    }, { $inc: { like: params.off ? -1 : 1 } });
-    ctx.body = result;
+    const likeFilter = {
+      article: id,
+    };
+    if (params.email) {
+      likeFilter.user = params.email;
+    } else {
+      likeFilter.ip = ip;
+    }
+    // 查找点赞点踩表,防止重复点赞,防止点赞同时点踩
+    const like = await ctx.model.LikeDislike.findOne(likeFilter);
+    if (!like) {
+      await ctx.model.LikeDislike.create({ ...likeFilter, like: 1 }); // 记录点赞信息
+      // 增加点赞数
+      await ctx.model.Article.update({
+        _id: id,
+      }, { $inc: { like: 1 } });
+    } else if (like.like === 1) {
+      ctx.body = { self: true, code: 405, message: '您已经点过赞了哦' };
+      return;
+    } else if (like.like === 0) {
+      await ctx.model.LikeDislike.update(likeFilter, { like: 1 }); // 修改点踩为点赞
+      // 增加点赞数同时减少点踩数
+      await ctx.model.Article.update({
+        _id: id,
+      }, { $inc: { like: 1, dislike: -1 } });
+    }
+    ctx.body = 'success';
   }
   // 点踩文章
   async dislikeArticle() {
     const { ctx } = this;
     const id = ctx.params.id;
+    const ip = ctx.request.ip;
+    const params = ctx.request.body;
     if (!id) {
       ctx.throw('文章不存在');
     }
-    const params = ctx.request.body;
-    const result = await ctx.model.Article.update({
-      _id: id,
-    }, { $inc: { dislike: params.off ? -1 : 1 } });
-    ctx.body = result;
+    const likeFilter = {
+      article: id,
+    };
+    if (params.email) {
+      likeFilter.user = params.email;
+    } else {
+      likeFilter.ip = ip;
+    }
+    // 查找点赞点踩表,防止重复点赞,防止点赞同时点踩
+    const like = await ctx.model.LikeDislike.findOne(likeFilter);
+    if (!like) {
+      await ctx.model.LikeDislike.create({ ...likeFilter, like: 0 }); // 记录点踩信息
+      // 增加点踩数
+      await ctx.model.Article.update({
+        _id: id,
+      }, { $inc: { like: 0 } });
+    } else if (like.like === 0) {
+      ctx.body = { self: true, code: 405, message: '您已经点过踩了哦' };
+      return;
+    } else if (like.like === 1) {
+      await ctx.model.LikeDislike.update(likeFilter, { like: 0 }); // 修改点赞为点踩
+      // 增加点踩数同时减少点赞数
+      await ctx.model.Article.update({
+        _id: id,
+      }, { $inc: { like: -1, dislike: 1 } });
+    }
+    ctx.body = 'success';
   }
   // 启用/禁用 文章
   async disabledArticle() {
@@ -184,6 +244,19 @@ class UserController extends Controller {
       _id: id,
     }, { disabled: params.disabled });
     ctx.body = result;
+  }
+  // 删除文章
+  async deleteArticle() {
+    const { ctx } = this;
+    const params = ctx.request.body;
+    await ctx.model.Article.remove({
+      _id: { $in: params },
+    });
+    // 同时删除相关评论
+    await ctx.model.Comment.remove({
+      article: { $in: params },
+    });
+    ctx.body = 'success';
   }
 }
 

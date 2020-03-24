@@ -48,16 +48,16 @@
     },
     methods: {
       handleLike() {
-        if (!(localStorage.getItem('likeComment') || '').includes(this.detail._id)) {
-          localStorage.setItem('likeComment', `${localStorage.getItem('likeComment') || ''}_${this.detail._id}`)
-          this.$emit('like', this.detail)
-        }
+        this.$emit('like', this.detail)
+        // if (!(localStorage.getItem('likeComment') || '').includes(this.detail._id)) {
+        //   localStorage.setItem('likeComment', `${localStorage.getItem('likeComment') || ''}_${this.detail._id}`)
+        // }
       },
       handleDislike() {
-        if (!(localStorage.getItem('dislikeComment') || '').includes(this.detail._id)) {
-          localStorage.setItem('dislikeComment', `${localStorage.getItem('dislikeComment') || ''}_${this.detail._id}`)
-          this.$emit('dislike', this.detail)
-        }
+        this.$emit('dislike', this.detail)
+        // if (!(localStorage.getItem('dislikeComment') || '').includes(this.detail._id)) {
+        //   localStorage.setItem('dislikeComment', `${localStorage.getItem('dislikeComment') || ''}_${this.detail._id}`)
+        // }
       },
       handleReply(item) {
         this.$emit('reply', item)

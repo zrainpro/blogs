@@ -28,11 +28,13 @@ module.exports = app => {
   router.post('/article/preserve', controller.article.keepArticle); // 暂存文章
   router.get('/article/:id/detail', controller.article.getDetail); // 获取文章详情
   router.get('/article/:id/back/detail', controller.article.getBackDetail); // 获取文章详情
+  router.get('/article/:id/like', controller.article.getLike); // 获取文章点赞点踩数
   router.get('/article/list', controller.article.getList); // 获取文章列表
   router.post('/article/list/all', controller.article.getListAll); // 获取所有文章列表, 包含被禁用的
   router.post('/article/:id/like', controller.article.likeArticle); // 点赞文章
   router.post('/article/:id/dislike', controller.article.dislikeArticle); // 点踩文章
   router.post('/article/:id/disabled', controller.article.disabledArticle); // 启用禁用文章
+  router.post('/article/:id/delete', controller.article.deleteArticle); // 删除文章
   // 代理请求防止跨域
   router.post('/proxy', controller.proxy.index);
 };

@@ -212,6 +212,7 @@
           }
           selectLanguage.appendChild(selectItem);
           box.appendChild(selectLanguage);
+        } else {
           // 只读状态取消删除按钮
           delete operationJSON.delete;
         }

@@ -6,10 +6,7 @@ module.exports = app => {
   const conn = app.mongooseDB.get('zr_blog');
   const counterSchema = new Schema({
     article: { type: String }, // 所属文章ID
-    nickname: { type: String }, // 昵称
-    avatar: { type: String }, // 头像
-    email: { type: String }, // 电子邮箱
-    blog: { type: String }, // 个人博客地址
+    user: { type: String }, // 所属用户 ID
     content: { type: String }, // 评论内容
     like: { type: Number, default: 0 }, // 点赞数
     dislike: { type: Number, default: 0 }, // 踩数

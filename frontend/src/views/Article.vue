@@ -79,6 +79,14 @@
         // 获取评论信息
         this.getComment();
       },
+      // 重新获取文章点赞信息
+      getArticleLikeInfo() {
+        this.apiGet(`/api/article/${this.$route.params.id}/like`).then(res => {
+          if (res.code === 200) {
+            this.info = { ...this.info, ...res.data };
+          }
+        })
+      },
       // 获取评论信息
       getComment() {
         // 获取评论信息
@@ -90,45 +98,53 @@
       },
       // 点赞评论
       handleLikeComment(detail) {
-        this.apiPost(`/api/comment/${detail._id}/like`).then(res => {
+        // 获取用户信息
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        this.apiPost(`/api/comment/${detail._id}/like`, { email: user.email }).then(res => {
           if (res.code === 200) {
-            detail.like += 1
+            this.getComment(); // 重新获取评论
           }
         })
       },
       // 点踩评论
       handleDislikeComment(detail) {
-        this.apiPost(`/api/comment/${detail._id}/dislike`).then(res => {
+        // 获取用户信息
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        this.apiPost(`/api/comment/${detail._id}/dislike`, { email: user.email }).then(res => {
           if (res.code === 200) {
-            detail.dislike += 1
+            this.getComment(); // 重新获取评论
           }
         })
       },
       // 点赞文章
       handleLikeArticle(detail) {
-        if (!(localStorage.getItem('likeArticle') || '').includes(detail._id)) {
-          localStorage.setItem('likeArticle', `${localStorage.getItem('likeArticle') || ''}_${detail._id}`)
-          this.apiPost(`/api/article/${detail._id}/like`).then(res => {
-            if (res.code === 200) {
-              detail.like += 1
-            }
-          })
-        } else {
-          this.$message.info('您已经点过赞了哦')
-        }
+        // 获取用户信息
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        this.apiPost(`/api/article/${detail._id}/like`, { email: user.email }).then(res => {
+          if (res.code === 200) {
+            this.getArticleLikeInfo(); // 重新获取文章点赞信息
+          }
+        })
+        // if (!(localStorage.getItem('likeArticle') || '').includes(detail._id)) {
+        //   localStorage.setItem('likeArticle', `${localStorage.getItem('likeArticle') || ''}_${detail._id}`)
+        // } else {
+        //   this.$message.info('您已经点过赞了哦')
+        // }
       },
-      // 点踩评论
+      // 点踩文章
       handleDislikeArticle(detail) {
-        if (!(localStorage.getItem('dislikeArticle') || '').includes(detail._id)) {
-          localStorage.setItem('dislikeArticle', `${localStorage.getItem('dislikeArticle') || ''}_${detail._id}`)
-          this.apiPost(`/api/article/${detail._id}/dislike`).then(res => {
-            if (res.code === 200) {
-              detail.dislike += 1
-            }
-          })
-        } else {
-          this.$message.info('您已经点过踩了哦')
-        }
+        // 获取用户信息
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        this.apiPost(`/api/article/${detail._id}/dislike`, { email: user.email }).then(res => {
+          if (res.code === 200) {
+            this.getArticleLikeInfo(); // 重新获取文章点赞信息
+          }
+        })
+        // if (!(localStorage.getItem('dislikeArticle') || '').includes(detail._id)) {
+        //   localStorage.setItem('dislikeArticle', `${localStorage.getItem('dislikeArticle') || ''}_${detail._id}`)
+        // } else {
+        //   this.$message.info('您已经点过踩了哦')
+        // }
       },
       // 评论文章
       replayArticle(item, otherInfo = {}) {

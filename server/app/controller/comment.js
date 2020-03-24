@@ -5,7 +5,7 @@ const {
   checkEmpty,
   checkSave,
 } = require('../utils');
-// todo 建立一个评论用户表,依据邮箱进行判别,保存头像信息,判断是否是同一个评论用户.
+// todo 防止重复点赞
 class UserController extends Controller {
   // 后台获取评论列表
   async getCommentsAll() {
@@ -35,9 +35,18 @@ class UserController extends Controller {
     const article = await ctx.model.Article.find({
       _id: { $in: result.map(_ => _.article) },
     });
+    // 获取用户信息
+    let users = await ctx.model.CommentUser.find({
+      _id: { $in: result.map(item => item.user) },
+    });
+    users = JSON.parse(JSON.stringify(users));
     ctx.body = {
       self: true,
-      data: result.map(_ => ({ ..._._doc, article: article.find(__ => String(_.article) === String(__._id)) })),
+      data: result.map(_ => ({
+        ...(users.find(it => String(_.user) === it._id) || {}),
+        ..._._doc,
+        article: article.find(__ => String(_.article) === String(__._id)),
+      })),
       page,
       limit,
       total,
@@ -47,8 +56,8 @@ class UserController extends Controller {
   async getComments() {
     const { ctx } = this;
     const params = ctx.query;
-    const selectKeys = 'article nickname avatar email blog content like dislike pid updateTime createTime';
-    const limit = parseInt(params.limit) || 10; // 默认取10条数据
+    const selectKeys = 'article user content like dislike pid rootPid updateTime createTime';
+    const limit = parseInt(params.limit) || 5; // 默认取5条数据
     let skipNum = ((parseInt(params.page) || 1) - 1) * limit; // 从多少条开始获取数据, 用于分页
     skipNum < 0 && (skipNum = 0); // 不能为负数
     const articleId = ctx.params.id;
@@ -72,16 +81,32 @@ class UserController extends Controller {
       return;
     }
     const response = JSON.parse(JSON.stringify(result));
-    // 获取根评论的子评论
+    // 获取所有子评论
+    const childResult = await ctx.model.Comment.find({
+      article: articleId,
+      rootPid: { $in: response.map(item => item._id) },
+      disabled: 0,
+    }).sort({ updateTime: -1 }).select(selectKeys);
+    const childResponse = JSON.parse(JSON.stringify(childResult || [])); // 转化为 json 对象
+    // 获取用户信息
+    let users = await ctx.model.CommentUser.find({
+      _id: { $in: [ ...response, ...childResponse ].map(item => item.user) },
+    });
+    users = JSON.parse(JSON.stringify(users));
+    // 统一追加 用户信息
+    childResponse.forEach(item => {
+      const tempUser = JSON.parse(JSON.stringify(users.find(it => it._id === item.user) || {}));
+      delete tempUser._id;
+      Object.assign(item, tempUser); // 把用户数据合并到返回信息中
+    });
     for (const item of response) {
-      const childResult = await ctx.model.Comment.find({
-        article: articleId,
-        rootPid: item._id,
-        disabled: 0,
-      }).sort({ updateTime: -1 }).select(selectKeys);
+      // 整合用户信息
+      const tempUser = JSON.parse(JSON.stringify(users.find(it => it._id === item.user) || {}));
+      delete tempUser._id;
+      Object.assign(item, tempUser); // 把用户数据合并到返回信息中
+      // 获取根评论的子评论
       // 获取回复评论的父评论信息 同时过滤 pid 不存在的
-      const childResponse = JSON.parse(JSON.stringify(childResult || []));
-      item.children = childResponse.map(it => {
+      item.children = childResponse.filter(it => it.rootPid === item._id).map(it => {
         const pidInfo = childResponse.find(_ => String(_._id) === String(it.pid));
         return { ...it, pidInfo };
       });
@@ -113,13 +138,19 @@ class UserController extends Controller {
     if (!articleInfo) {
       ctx.throw('文章不存在');
     }
+    // 查找创建用户
+    const user = await ctx.model.CommentUser.findOneAndUpdate({
+      email: params.email,
+    }, {
+      email: params.email,
+      nickname: params.nickname,
+      avatar: params.avatar,
+      blog: params.blog,
+    }, { new: true, upsert: true });
     // 保存
     const result = await ctx.model.Comment.create({
       article: params.article,
-      nickname: params.nickname,
-      avatar: params.avatar,
-      email: params.email,
-      blog: params.blog,
+      user: user._id,
       content: params.content,
       pid: params.pid,
       rootPid: params.rootPid,
@@ -132,30 +163,77 @@ class UserController extends Controller {
   }
   // 点赞评论
   async likeComment() {
-    // todo 防止重复点赞
     const { ctx } = this;
     const id = ctx.params.id;
+    const ip = ctx.request.ip;
     const params = ctx.request.body;
     if (!id) {
       ctx.throw('评论不存在');
     }
-    const result = await ctx.model.Comment.update({
-      _id: id,
-    }, { $inc: { like: params.off ? -1 : 1 } });
-    ctx.body = result;
+    const likeFilter = {
+      comment: id,
+    };
+    if (params.email) {
+      likeFilter.user = params.email;
+    } else {
+      likeFilter.ip = ip;
+    }
+    // 查找点赞点踩表,防止重复点赞,防止点赞同时点踩
+    const like = await ctx.model.LikeDislike.findOne(likeFilter);
+    if (!like) {
+      await ctx.model.LikeDislike.create({ ...likeFilter, like: 1 }); // 记录点赞信息
+      // 增加点赞数
+      await ctx.model.Comment.update({
+        _id: id,
+      }, { $inc: { like: 1 } });
+    } else if (like.like === 1) {
+      ctx.body = { self: true, code: 405, message: '您已经点过赞了哦' };
+      return;
+    } else if (like.like === 0) {
+      await ctx.model.LikeDislike.update(likeFilter, { like: 1 }); // 修改点踩为点赞
+      // 增加点赞数同时减少点踩数
+      await ctx.model.Comment.update({
+        _id: id,
+      }, { $inc: { like: 1, dislike: -1 } });
+    }
+    ctx.body = 'success';
   }
   // 点踩评论
   async dislikeComment() {
     const { ctx } = this;
     const id = ctx.params.id;
+    const ip = ctx.request.ip;
+    const params = ctx.request.body;
     if (!id) {
       ctx.throw('评论不存在');
     }
-    const params = ctx.request.body;
-    const result = await ctx.model.Comment.update({
-      _id: id,
-    }, { $inc: { dislike: params.off ? -1 : 1 } });
-    ctx.body = result;
+    const likeFilter = {
+      comment: id,
+    };
+    if (params.email) {
+      likeFilter.user = params.email;
+    } else {
+      likeFilter.ip = ip;
+    }
+    // 查找点赞点踩表,防止重复点赞,防止点赞同时点踩
+    const like = await ctx.model.LikeDislike.findOne(likeFilter);
+    if (!like) {
+      await ctx.model.LikeDislike.create({ ...likeFilter, like: 0 }); // 记录点踩信息
+      // 增加点踩数
+      await ctx.model.Comment.update({
+        _id: id,
+      }, { $inc: { like: 0 } });
+    } else if (like.like === 0) {
+      ctx.body = { self: true, code: 405, message: '您已经点过踩了哦' };
+      return;
+    } else if (like.like === 1) {
+      await ctx.model.LikeDislike.update(likeFilter, { like: 0 }); // 修改点赞为点踩
+      // 增加点踩数同时减少点赞数
+      await ctx.model.Comment.update({
+        _id: id,
+      }, { $inc: { like: -1, dislike: 1 } });
+    }
+    ctx.body = 'success';
   }
   // 批量启用 / 禁用评论
   async enabledComment() {
