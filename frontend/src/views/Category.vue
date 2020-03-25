@@ -7,7 +7,7 @@
           <div class="title" @click="linkTo(`/article/${item._id}`)">{{item.title}} <span>{{moment(item.createTime).format('MM月DD日·YYYY年')}}</span></div>
           <div class="intro" @click="linkTo(`/article/${item._id}`)">{{item.intro}}</div>
           <div class="category">
-            <div><div class="tag" v-for="tag in (item.tag || '').split(',')" :key="tag">{{tag}}</div></div>
+            <div><div v-for="tag in (item.tag || '').split(',').filter(_ => _)" :key="tag" class="tag">{{tag}}</div></div>
             <div>
               <span class="mark"><icon use="iconyuedu" /> {{item.view || 1}}</span>
               <span class="mark"><icon use="icondianzan1" /> {{item.like || 0}}</span>
@@ -15,6 +15,8 @@
           </div>
         </div>
       </div>
+      <div v-if="!loading && page.total <= page.page * page.limit" class="loadend">我是有底线的 ~0.0~ </div>
+      <div v-loading="loading" class="loading" />
     </div>
     <Empty v-else />
   </div>
@@ -30,28 +32,69 @@
     data() {
       return {
         moment,
-        list: []
+        list: [],
+        page: { page: 1, limit: 5, total: 0 },
+        loading: false
       }
     },
     watch: {
       '$route': {
         immediate: true,
         handler() {
-          this.$nextTick(this.getList)
+          this.$nextTick(() => {
+            this.$global.loading = true; // 开启加载动画
+            this.$safeEmitComponentMethod('changeTheme');
+            this.getList();
+          });
         }
       }
     },
+    mounted () {
+      window.addEventListener('scroll', this.scroll);
+    },
+    destroyed() {
+      window.removeEventListener('scroll', this.scroll);
+    },
     methods: {
+      // 滚动重新获取数据
+      scroll(event) {
+        // 先节流
+        if (!this.canScroll) {
+          this.canScroll = true;
+          window.requestAnimationFrame(() => {
+            this.canScroll = false;
+            // 防抖
+            if (!this.loading && this.page.page * this.page.limit <= this.page.total) {
+              const scrollHeight = document.documentElement.scrollHeight;
+              const scrollTop = document.documentElement.scrollTop;
+              const clientHeight = window.innerHeight;
+              if (clientHeight + scrollTop >= scrollHeight - 50) {
+                // 防抖
+                this.loading = true;
+                this.page.page++;
+                this.getList().then(() => {
+                  this.loading = false;
+                });
+              }
+            }
+          })
+        }
+      },
       // 获取文章
       getList() {
-        this.$global.loading = true; // 开启加载动画
-        this.$safeEmitComponentMethod('changeTheme')
-        this.$parseRouter().then(menu => {
-          console.log(menu);
-          const params = {};
-          menu && (params.category = menu.id);
-          this.apiGet('/api/article/list', { params }).then(res => {
-            this.list = res.data
+        return new Promise(resolve => {
+          this.$parseRouter().then(menu => {
+            const params = { ...this.page };
+            menu && (params.category = menu.id);
+            this.apiGet('/api/article/list', { params }).then(res => {
+              this.list.splice((this.page.page - 1) * this.page.limit, this.page.limit, ...(res.data || []))
+              this.page = {
+                page: res.page,
+                limit: this.page.limit,
+                total: res.total
+              }
+              resolve();
+            })
           })
         })
       },
@@ -125,6 +168,10 @@
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
+            >* {
+              display: flex;
+              flex-direction: row;
+            }
             .mark {
               svg {
                 font-size: 16px;
@@ -139,6 +186,20 @@
         +.article {
           margin-top: 20px;
         }
+      }
+      .loading {
+        height: 40px;
+        margin-top: 20px;
+        /deep/ .el-loading-mask {
+          background-color: rgba(255,255,255, 0.6);
+        }
+      }
+      .loadend {
+        height: 40px;
+        line-height: 40px;
+        margin-top: 20px;
+        background-color: rgba(255,255,255,0.6);
+        color: @link;
       }
     }
   }

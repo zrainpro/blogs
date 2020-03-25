@@ -118,7 +118,7 @@
         // todo 在 monaco-editor 中取消监听dom节点变化,节省性能;
         const config = { childList: true, subtree: true, characterData: true };
         const observer = new MutationObserver((mutationList) => {
-          console.log(mutationList);
+          // console.log(mutationList);
           this.domchanged = mutationList; // 记录当前按键更改的 dom
           // observer.takeRecords();
           // 控制里面字符不能为空
@@ -175,15 +175,13 @@
         observer.observe(this.$refs.editor, config);
         // 记录当前按键的值,方便判断行为
         this.$refs.editor.addEventListener('keydown', (event) => {
-          console.log(event);
           this.keyCode = event.keyCode;
           this.domchanged = false; // 重新标记 dom 为未改变状态
         });
         // todo 空标签按删除的时候会删除前面的标签, 想办法解决掉这个问题
         this.$refs.editor.addEventListener('keyup', (event) => {
-          console.log(this.domchanged);
           if (!this.domchanged && event.keyCode === 8) {
-            console.log('按下删除键但是没有删除元素')
+            // console.log('按下删除键但是没有删除元素')
           }
         });
       },

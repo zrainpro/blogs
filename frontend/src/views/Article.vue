@@ -6,9 +6,11 @@
       <span>{{moment(info.updateTime).format('HH时mm分·MM月DD日·YYYY年')}}修改</span>
     </div>
     <Editor class="editor" readonly :value="info.content" />
-    <div class="article-tag">
+    <div v-if="info.tag && info.tag.length" class="article-tag">
       <span style="margin-right: 10px">文章标签: </span>
-      <span v-for="item in (info.tag || '').split(',')" :key="item" class="tag">{{item}}</span>
+      <span>
+        <span v-for="item in (info.tag || '').split(',')" :key="item" class="tag">{{item}}</span>
+      </span>
     </div>
     <div class="mark">
       <div>

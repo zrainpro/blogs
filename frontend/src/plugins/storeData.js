@@ -78,7 +78,6 @@ Vue.prototype.$safeEmitComponentMethod = function (methodName, val) {
 Vue.prototype.$parseRouter = function () {
   return new Promise(resolve => {
     Vue.prototype.$getStore('menu').then(menu => {
-      console.log(menu);
       // 首页没有分类 ID
       if (location.pathname === '/') {
         resolve(null);
