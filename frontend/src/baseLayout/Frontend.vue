@@ -71,6 +71,7 @@ export default {
     }
   },
   mounted () {
+    // 注册获取背景事件放到 getBackGround 中, 保证获取获取完背景图数据才注册
     // 获取默认背景图
     this.getBackground();
     // 获取菜单
@@ -84,10 +85,6 @@ export default {
     })
     // 导航条动画
     document.addEventListener('scroll', this.scrollEvent)
-    // 注册获取背景事件
-    this.$onComponentMethod('changeTheme', {
-      handler: this.changeTheme.bind(this)
-    })
     // 添加右键菜单事件
     this.$nextTick(() => {
       // eslint-disable-next-line no-new
@@ -111,6 +108,10 @@ export default {
         if (res.code === 200) {
           this.background = res.data;
         }
+        // 注册获取背景事件
+        this.$onComponentMethod('changeTheme', {
+          handler: this.changeTheme.bind(this)
+        })
       })
     },
     // 获取菜单
