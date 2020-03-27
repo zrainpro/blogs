@@ -63,6 +63,16 @@ const routes = [
         component: () => import('../views/manage/Comment.vue') // 评论管理
       },
       {
+        path: '/manage/background',
+        name: '背景图管理',
+        component: () => import('../views/manage/background.vue') // 背景图管理
+      },
+      {
+        path: '/manage/head',
+        name: '评论头像管理',
+        component: () => import('../views/manage/head.vue') // 评论头像管理
+      },
+      {
         path: '/manage/link',
         name: '友链管理',
         component: () => import('../views/manage/Link.vue') // 友链管理

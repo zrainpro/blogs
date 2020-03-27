@@ -2,8 +2,8 @@
   <div class="article">
     <h1 class="title">{{info.title}}</h1>
     <div class="intro">
-      <span>{{moment(info.createTime).format('HH时mm分·MM月DD日·YYYY年')}}</span>
-      <span>{{moment(info.updateTime).format('HH时mm分·MM月DD日·YYYY年')}}修改</span>
+      <!--      <span>{{moment(info.createTime).format('HH时mm分·MM月DD日·YYYY年')}}</span>-->
+      <span>{{moment(info.updateTime).format('YYYY年·MM月DD日·HH时mm分')}} 更新</span>
     </div>
     <Editor class="editor" readonly :value="info.content" />
     <div v-if="info.tag && info.tag.length" class="article-tag">
@@ -187,6 +187,15 @@
         height: 2px;
         background-color: #42b983;
         margin: 30px 0;
+      }
+    }
+    /* 介绍 */
+    .intro {
+      color: #f8f8f8;
+      background-color: rgba(200,200,200,0.8);
+      padding: 0 10px;
+      span + span {
+        margin-left: 40px;
       }
     }
     /* 标签 */

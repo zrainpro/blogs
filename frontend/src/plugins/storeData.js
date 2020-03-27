@@ -32,7 +32,8 @@ Vue.prototype.$getStore = function(name) {
     if (Vue.prototype.$global[name]) {
       resolve(Vue.prototype.$global[name])
     } else {
-      globalGetDataPromise[name] = resolve
+      setTimeout(resolve, 1000); // 1s 的超时时长
+      globalGetDataPromise[name] = resolve;
     }
   })
 }

@@ -2,12 +2,12 @@
   <div class="login">
     <div class="login-box">
       <img class="login-logo" src="../assets/logo.png" alt="">
-      <el-form :model="user" :rules="rules" ref="login" label-width="80px">
+      <el-form ref="login" :model="user" :rules="rules" label-width="80px">
         <el-form-item label="用户名" prop="name">
-          <el-input v-model="user.name" />
+          <el-input v-model="user.name" @keyup.enter.native="login" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model="user.password" />
+          <el-input v-model="user.password" type="password" @keyup.enter.native="login" />
         </el-form-item>
       </el-form>
       <div>

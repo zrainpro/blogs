@@ -71,6 +71,8 @@ export default {
     }
   },
   mounted () {
+    // 获取默认背景图
+    this.getBackground();
     // 获取菜单
     this.getMenu();
     // 设置全局数据 loading
@@ -103,6 +105,14 @@ export default {
     document.removeEventListener('scroll', this.scrollEvent)
   },
   methods: {
+    // 获取背景图
+    getBackground() {
+      this.apiGet('/api/common/json', { params: { key: 'background' } }).then(res => {
+        if (res.code === 200) {
+          this.background = res.data;
+        }
+      })
+    },
     // 获取菜单
     getMenu() {
       this.apiGet('/api/category/list').then(res => {

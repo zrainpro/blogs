@@ -5,7 +5,7 @@
         <div class="img" @click="linkTo(`/article/${item._id}`)"><img :src="item.topicImg || require('../assets/category.jpg')" alt=""></div>
         <div class="info">
           <div class="title" @click="linkTo(`/article/${item._id}`)">{{item.title}} <span>{{moment(item.createTime).format('MM月DD日·YYYY年')}}</span></div>
-          <div class="intro" @click="linkTo(`/article/${item._id}`)">{{item.intro}}</div>
+          <div class="intro" @click="linkTo(`/article/${item._id}`)" v-html="item.intro" />
           <div class="category">
             <div><div v-for="tag in (item.tag || '').split(',').filter(_ => _)" :key="tag" class="tag">{{tag}}</div></div>
             <div>
@@ -160,7 +160,7 @@
             font-size: 14px;
             line-height: 1.5em;
             text-indent: 28px;
-            color: #666666;
+            color: #999999;
             cursor: pointer;
           }
           .category {

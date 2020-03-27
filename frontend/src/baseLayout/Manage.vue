@@ -50,6 +50,8 @@ export default {
         { name: '菜单管理', route: '/manage/menu' },
         { name: '文章管理', route: '/manage/article' },
         { name: '评论管理', route: '/manage/comment' },
+        { name: '背景图管理', route: '/manage/background' },
+        { name: '评论头像管理', route: '/manage/head' },
         { name: '友链管理', route: '/manage/link' }
       ],
       userInfo: {}

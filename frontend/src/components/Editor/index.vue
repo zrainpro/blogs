@@ -203,6 +203,7 @@
           copy: {
             class: 'editor-operation-btn editor-operation-copy',
             eventName: 'mousedown',
+            title: '复制',
             listener: () => {
               window.copyText(this.monaco[id].getValue()); // 复制
               // todo 向外提供复制成功的api;
@@ -211,6 +212,7 @@
           delete: {
             class: 'editor-operation-btn editor-operation-delete',
             eventName: 'mousedown',
+            title: '删除',
             listener: () => {
               delete this.monaco[id]; // 删除编辑器的数据
               this.$refs.editor.removeChild(box); // 移除编辑器
@@ -266,6 +268,7 @@
         Object.entries(operationJSON).forEach(([key, item]) => {
           const temp = document.createElement('div'); // 按钮容器
           temp.setAttribute('class', item.class); // 设置样式
+          temp.setAttribute('title', item.title); // 设置 title
           temp.addEventListener(item.eventName, item.listener); // 设置事件
           operation.appendChild(temp); // 放到容器里面
         })

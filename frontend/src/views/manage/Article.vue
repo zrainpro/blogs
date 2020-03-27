@@ -17,9 +17,11 @@
         </template>
       </el-table-column>
       <el-table-column label="分类" prop="categoryName" width="80" />
-      <el-table-column label="标签" prop="tag">
+      <el-table-column label="标签" prop="tag" width="140">
         <template slot-scope="scope">
-          <span v-for="item in (scope.row.tag || '').split(',')" :key="item" class="tag">{{item}}</span>
+          <div class="tag-box">
+            <span v-for="item in (scope.row.tag || '').split(',').filter(_ => _)" :key="item" class="tag">{{item}}</span>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="是否禁用" prop="disabled" width="140">
@@ -137,6 +139,14 @@ export default {
 .article {
   text-align: left;
   padding: 15px;
+  .tag-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    .tag {
+      margin: 2px;
+    }
+  }
   .pagination {
     margin-top: 15px;
     display: flex;

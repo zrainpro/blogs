@@ -98,6 +98,8 @@
       }
     },
     mounted () {
+      // 获取头像数据
+      this.getImg();
       const user = localStorage.getItem('user')
       if (user) {
         try {
@@ -109,12 +111,24 @@
           console.error(e)
         }
       }
-      // todo 从接口获取头像列表
       if (!this.user.avatar) {
-        this.user.avatar = this.avatarList[0];
+        this.user.avatar = require('../assets/head1.jpg');
       }
     },
     methods: {
+      getImg() {
+        // 读取全局数据避免重复请求
+        if (!this.$global.avatarList) {
+          this.apiGet('/api/common/json', { params: { key: 'avatar' } }).then(res => {
+            if (res.code === 200) {
+              this.avatarList = res.data;
+              this.$storeData('avatarList', res.data);
+            }
+          })
+        } else {
+          this.avatarList = this.$global.avatarList;
+        }
+      },
       chooseAvatar(item) {
         this.user.avatar = item;
         this.showAvatar = false;
