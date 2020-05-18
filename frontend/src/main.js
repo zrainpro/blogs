@@ -8,6 +8,7 @@ import './style/init.less';
 import './plugins/element.js';
 import './plugins/storeData.js';
 import './plugins/dom.js';
+import './plugins/proxyEvent';
 import Icon from './components/Icon';
 
 Vue.component('icon', Icon);

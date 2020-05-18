@@ -127,11 +127,6 @@
             this.getArticleLikeInfo(); // 重新获取文章点赞信息
           }
         })
-        // if (!(localStorage.getItem('likeArticle') || '').includes(detail._id)) {
-        //   localStorage.setItem('likeArticle', `${localStorage.getItem('likeArticle') || ''}_${detail._id}`)
-        // } else {
-        //   this.$message.info('您已经点过赞了哦')
-        // }
       },
       // 点踩文章
       handleDislikeArticle(detail) {
@@ -142,11 +137,6 @@
             this.getArticleLikeInfo(); // 重新获取文章点赞信息
           }
         })
-        // if (!(localStorage.getItem('dislikeArticle') || '').includes(detail._id)) {
-        //   localStorage.setItem('dislikeArticle', `${localStorage.getItem('dislikeArticle') || ''}_${detail._id}`)
-        // } else {
-        //   this.$message.info('您已经点过踩了哦')
-        // }
       },
       // 评论文章
       replayArticle(item, otherInfo = {}) {

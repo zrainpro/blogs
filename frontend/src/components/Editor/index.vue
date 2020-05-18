@@ -118,7 +118,7 @@
         // todo 在 monaco-editor 中取消监听dom节点变化,节省性能;
         const config = { childList: true, subtree: true, characterData: true };
         const observer = new MutationObserver((mutationList) => {
-          // console.log(mutationList);
+          console.log(mutationList);
           this.domchanged = mutationList; // 记录当前按键更改的 dom
           // observer.takeRecords();
           // 控制里面字符不能为空
@@ -175,11 +175,19 @@
         observer.observe(this.$refs.editor, config);
         // 记录当前按键的值,方便判断行为
         this.$refs.editor.addEventListener('keydown', (event) => {
+          // TODO 通过拦截删除行为解决浏览器怪异的删除行为(无法获取到具体的 dom 元素)
+          console.log(event);
+          if (event.keyCode === 8) {
+            event.preventDefault();
+          }
           this.keyCode = event.keyCode;
           this.domchanged = false; // 重新标记 dom 为未改变状态
         });
         // todo 空标签按删除的时候会删除前面的标签, 想办法解决掉这个问题
         this.$refs.editor.addEventListener('keyup', (event) => {
+          if (event.keyCode === 8) {
+            event.preventDefault();
+          }
           if (!this.domchanged && event.keyCode === 8) {
             // console.log('按下删除键但是没有删除元素')
           }
@@ -192,6 +200,7 @@
       },
       // 创建 monaco-editor
       createMonaco(target, language = 'javascript', value) {
+        language = language || 'javascript';
         const id = window.btoa(new Date().getTime());
         const box = document.createElement('div');
         box.setAttribute('id', id);
@@ -335,6 +344,7 @@
         const element = document.createElement(tagName);
         element.appendChild(childrenElement || document.createElement('br'));
         element.setAttribute('class', '');
+        // element.setAttribute('data-id', '123456');
         return element;
       },
       // 光标移动到下一行

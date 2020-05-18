@@ -1,6 +1,6 @@
 <template>
-  <div class="reply">
-    <el-button type="text" @click="show = !show" @blur="show = false">回复</el-button>
+  <div class="reply" ref="box">
+    <el-button type="text" @click="show = !show">回复</el-button>
     <div v-show="show" class="replay-box">
       <div v-if="showUser">
         <el-form :model="user" :rules="rules" inline label-width="80px">
@@ -16,7 +16,7 @@
           <el-form-item label="头像">
             <div class="avatar-box">
               <img :src="user.avatar" alt="" @click="showChooseAvatar = !showChooseAvatar">
-              <div v-if="showChooseAvatar" class="avatar-list">
+              <div v-if="showChooseAvatar" ref="topBox" class="avatar-list">
                 <div>
                   <img v-for="item in avatarList" :key="item" class="avatar-item" :src="item" alt="" @click="chooseAvatar(item)">
                 </div>
@@ -28,17 +28,20 @@
       <textarea v-model="user.content" maxlength="1000" class="reply-content" />
       <div class="reply-bottom">
         <div class="avatar-box">
-          <el-tooltip :content="`亲爱的“${user.nickname}”,点击可以修改头像哦`">
+          <el-tooltip :content="`亲爱的“${user.nickname}”,点击可以修改头像哦`" v-if="!showUser">
             <img class="avatar-item" :src="user.avatar" alt="" @click="showAvatar = !showAvatar">
           </el-tooltip>
-          <div v-if="showAvatar" class="avatar-list">
+          <div v-if="showAvatar" class="avatar-list" ref="bottomBox">
             <div>
               <img v-for="item in avatarList" :key="item" class="avatar-item" :src="item" alt="" @click="chooseAvatar(item)">
             </div>
           </div>
+          <el-tooltip v-if="!showUser" :content="`亲爱的“${user.nickname}”,点击可以个人信息哦`">
+            <el-button type="text" @click="showUser = true">{{user.nickname}}</el-button>
+          </el-tooltip>
         </div>
         <div>
-          <el-button type="text" @click="show = false">取消回复</el-button>
+          <el-button type="text" @click="show = false" ref="cancel">取消回复</el-button>
           <el-button type="primary" size="small" @click="handleOk">提交评论</el-button>
         </div>
       </div>
@@ -49,13 +52,20 @@
 <script>
   export default {
     name: 'Reply',
+    props: {
+      selfUser: {
+        type: Object,
+        default: null
+      }
+    },
     data() {
       return {
         user: {
           nickname: '',
           avatar: '',
           email: '',
-          blog: ''
+          blog: '',
+          content: ''
         },
         rules: {
           nickname: [
@@ -98,6 +108,7 @@
       }
     },
     mounted () {
+      this.$event.on('click', this.blurHide); // 注册失去焦点隐藏
       // 获取头像数据
       this.getImg();
       const user = localStorage.getItem('user')
@@ -111,11 +122,28 @@
           console.error(e)
         }
       }
+      // 如果父组件传入用户信息强制使用父级传入的
+      if (this.selfUser) {
+        this.user = this.selfUser;
+        this.showUser = false;
+      }
       if (!this.user.avatar) {
         this.user.avatar = require('../assets/head1.jpg');
       }
     },
+    destroyed () {
+      this.$event.remove('click', this.blurHide);
+    },
     methods: {
+      blurHide(event) {
+        if (!this.$refs.box.contains(event.target)) {
+          this.show = false;
+        } else if (this.$refs.topBox && !this.$refs.topBox.contains(event.target)) {
+          this.showChooseAvatar = false;
+        } else if (this.$refs.bottomBox && !this.$refs.bottomBox.contains(event.target)) {
+          this.showAvatar = false;
+        }
+      },
       getImg() {
         // 读取全局数据避免重复请求
         if (!this.$global.avatarList) {
@@ -132,6 +160,7 @@
       chooseAvatar(item) {
         this.user.avatar = item;
         this.showAvatar = false;
+        this.showChooseAvatar = false;
       },
       handleOk() {
         const check = [
@@ -145,6 +174,11 @@
             return;
           }
         }
+        // 昵称不能包含博主
+        if (this.user.nickname.includes('博主')) {
+          this.$message.error('不能冒充博主。 PS: 手动滑稽');
+          return;
+        }
         // 把用户信息写入 local
         localStorage.setItem('user', JSON.stringify({
           nickname: this.user.nickname,
@@ -152,7 +186,9 @@
           avatar: this.user.avatar,
           blog: this.user.blog
         }));
-        this.$emit('reply', this.user);
+        this.$emit('reply', JSON.parse(JSON.stringify(this.user)));
+        this.user.content = '';
+        this.showUser = false;
         this.show = false;
       }
     }
@@ -174,35 +210,43 @@
     .replay-box {
       width: 630px;
       position: absolute;
-      right: 0;
+      right: -0.5em;
       top: 3em;
       z-index: 1000;
       padding: 20px;
       border-radius: 5px;
+      border: 1px solid rgba(200, 200, 200, 0.5);
       box-shadow: @box-shadow;
       background-color: rgba(255,255,255, 0.2);
       backdrop-filter: blur(3px);
       &::before {
         content: '';
         display: block;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-bottom: 10px solid rgba(255,255,255,0.2);
+        /*border-left: 10px solid transparent;*/
+        /*border-right: 10px solid transparent;*/
+        /*border-bottom: 10px solid rgba(255,255,255,0.2);*/
+        width: 18px;
+        height: 18px;
+        border-top: 1px solid rgba(200, 200, 200, 0.8);
+        border-left: 1px solid rgba(200, 200, 200, 0.8);
+        transform: rotate(45deg);
         position: absolute;
         top: -10px;
-        right: 0.5em;
+        right: 0.8em;
       }
     }
     .avatar-box {
-      width: 55px;
+      /*width: 55px;*/
       height: 55px;
       position: relative;
       >img {
-        width: 100%;
-        height: 100%;
+        width: 55px;
+        height: 55px;
         box-shadow: @box-shadow;
         border-radius: 5px;
         cursor: pointer;
+        vertical-align: middle;
+        margin-right: 2em;
       }
       .avatar-list {
         position: absolute;
@@ -229,7 +273,7 @@
           left: 20px;
           border-left: 10px solid transparent;
           border-right: 10px solid transparent;
-          border-top: 10px solid rgba(255,255,255,0.4);
+          border-top: 10px solid rgba(255,255,255,0.9);
           box-shadow: @box-shadow;
         }
       }

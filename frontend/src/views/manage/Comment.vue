@@ -31,6 +31,7 @@
       <el-table-column label="创建时间" prop="createTime" width="100" />
       <el-table-column label="操作" width="120">
         <template slot-scope="{ row }">
+          <Reply :self-user="user" @reply="replay($event, row)"></Reply>
           <el-button
             type="text"
             :class="row.disabled === 0 ? 'red' : 'green'"
@@ -56,9 +57,11 @@
 <script>
 import moment from 'moment';
 import CreateForm from '../../components/CreateForm';
+import Reply from '../../components/Reply';
+
 export default {
   name: 'manageComment',
-  components: { CreateForm },
+  components: { CreateForm, Reply },
   data() {
     return {
       lists: [],
@@ -78,8 +81,12 @@ export default {
             ] },
           { type: 'searchSelect', key: 'article', label: '所属文章', callback: this.getArticleData }
         ]
-      }
+      },
+      user: {}
     }
+  },
+  created () {
+    this.user = JSON.parse(sessionStorage.getItem('user'));
   },
   mounted () {
     // 获取评论信息
@@ -149,6 +156,26 @@ export default {
           }
         })
       })
+    },
+    // 回复评论
+    replay(item, row) {
+      // 获取管理员信息
+      const admin = JSON.parse(sessionStorage.getItem('user'));
+      this.apiPost('/api/comment/create', {
+        article: row.article._id,
+        nickname: admin.nickname + '（博主）',
+        avatar: admin.avatar,
+        email: admin.email,
+        blog: location.origin,
+        content: item.content,
+        pid: row._id,
+        rootPid: row.rootPid
+      }).then(res => {
+        if (res.code === 200) {
+          this.$message.success('评论成功!');
+          this.getData();
+        }
+      })
     }
   }
 }
@@ -166,6 +193,15 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+  }
+  /deep/ .el-table {
+    overflow: visible;
+  }
+  /deep/ .el-table .cell {
+    overflow: visible;
+  }
+  /deep/ .el-table__body-wrapper {
+    overflow: visible;
   }
 }
 </style>
