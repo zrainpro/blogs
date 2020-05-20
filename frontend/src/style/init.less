@@ -4,7 +4,7 @@ html, body {
   margin: 0;
   background-color: transparent;
 }
-* {
+*, svg:not {
   box-sizing: border-box;
   font-size: 14px;
   transition: all .2s ease-in-out;
@@ -66,4 +66,16 @@ a {
 }
 .green {
   color: @link !important;
+}
+.hover-red {
+  &:hover {
+    fill: @red !important;
+    color: @red !important;
+  }
+}
+.hover-blue {
+  &:hover {
+    fill: @blue !important;
+    color: @blue !important;
+  }
 }

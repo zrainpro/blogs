@@ -19,15 +19,29 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c69a8c8b-6a2e-46b6-974d-e69cb3ea6f1d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/src/plugins/proxyEvent.js" afterDir="false" />
+    <list default="true" id="c69a8c8b-6a2e-46b6-974d-e69cb3ea6f1d" name="Default Changelist" comment="1, 评论管理添加快捷回复功能&#10;2, 回复弹窗自动消失功能">
+      <change afterPath="$PROJECT_DIR$/frontend/public/iconfont/demo.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/iconfont/demo_index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Editor/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Editor/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.eot" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.eot" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.svg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.woff" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.woff" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/iconfont/iconfont.woff2" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/baseLayout/Manage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/baseLayout/Manage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/CreateForm/FormItem.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/CreateForm/FormItem.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Reply.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Reply.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Article.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Article.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/style/init.less" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/style/init.less" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/style/var.less" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/style/var.less" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/manage/Comment.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/manage/Comment.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/server/.travis.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/manage/background.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/manage/background.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/manage/head.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/manage/head.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,6 +81,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\blogs\frontend\public\iconfont" />
       <recent name="F:\self\blog\frontend\src\assets" />
     </key>
   </component>
@@ -105,8 +120,18 @@
       <workItem from="1586855174719" duration="241000" />
       <workItem from="1586855463848" duration="934000" />
       <workItem from="1587359480501" duration="631000" />
-      <workItem from="1589778529505" duration="16789000" />
+      <workItem from="1589778529505" duration="19516000" />
+      <workItem from="1589852065048" duration="378000" />
+      <workItem from="1589936591077" duration="9504000" />
     </task>
+    <task id="LOCAL-00001" summary="1, 评论管理添加快捷回复功能&#10;2, 回复弹窗自动消失功能">
+      <created>1589797078895</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1589797078895</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -122,6 +147,11 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="1, 评论管理添加快捷回复功能&#10;2, 回复弹窗自动消失功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="1, 评论管理添加快捷回复功能&#10;2, 回复弹窗自动消失功能" />
   </component>
   <component name="WindowStateProjectService">
     <state x="470" y="227" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585203675564">
@@ -206,9 +236,18 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="102" y="154" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1585721388138" />
-    <state x="880" y="358" width="807" height="632" key="find.popup" timestamp="1585291752537">
+    <state x="620" y="247" key="Vcs.Push.Dialog.v2" timestamp="1589797082325">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="620" y="247" key="Vcs.Push.Dialog.v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1589797082325" />
+    <state x="880" y="358" width="807" height="632" key="find.popup" timestamp="1589946567007">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="880" y="358" width="807" height="632" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1589946567007" />
     <state x="880" y="358" width="807" height="632" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1585291752537" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1589947248708">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1589947248708" />
   </component>
 </project>

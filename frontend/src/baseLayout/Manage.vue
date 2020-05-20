@@ -58,13 +58,16 @@ export default {
     }
   },
   mounted() {
-    const userInfo = window.sessionStorage.getItem('user');
+    const userInfo = window.localStorage.getItem('dXNlcg==');
     if (userInfo) {
       try {
         this.userInfo = JSON.parse(userInfo);
       } catch (e) {
         console.error(e)
       }
+    } else {
+      this.$message.info('登录过期,请重新登录!')
+      this.$router.replace('/login')
     }
   },
   methods: {

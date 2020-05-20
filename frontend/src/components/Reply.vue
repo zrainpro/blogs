@@ -1,5 +1,5 @@
 <template>
-  <div class="reply" ref="box">
+  <div ref="box" class="reply">
     <el-button type="text" @click="show = !show">回复</el-button>
     <div v-show="show" class="replay-box">
       <div v-if="showUser">
@@ -28,10 +28,10 @@
       <textarea v-model="user.content" maxlength="1000" class="reply-content" />
       <div class="reply-bottom">
         <div class="avatar-box">
-          <el-tooltip :content="`亲爱的“${user.nickname}”,点击可以修改头像哦`" v-if="!showUser">
+          <el-tooltip v-if="!showUser" :content="`亲爱的“${user.nickname}”,点击可以修改头像哦`">
             <img class="avatar-item" :src="user.avatar" alt="" @click="showAvatar = !showAvatar">
           </el-tooltip>
-          <div v-if="showAvatar" class="avatar-list" ref="bottomBox">
+          <div v-if="showAvatar" ref="bottomBox" class="avatar-list">
             <div>
               <img v-for="item in avatarList" :key="item" class="avatar-item" :src="item" alt="" @click="chooseAvatar(item)">
             </div>
@@ -41,7 +41,7 @@
           </el-tooltip>
         </div>
         <div>
-          <el-button type="text" @click="show = false" ref="cancel">取消回复</el-button>
+          <el-button ref="cancel" type="text" @click="show = false">取消回复</el-button>
           <el-button type="primary" size="small" @click="handleOk">提交评论</el-button>
         </div>
       </div>

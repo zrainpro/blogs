@@ -1,8 +1,8 @@
 <template>
   <!-- 输入框类型 -->
   <el-input v-if="item.type === 'input'"
-            size="small"
             v-model="form[item.key]"
+            size="small"
             :placeholder="item.placeholder"
   />
   <!-- 下拉框类型 -->

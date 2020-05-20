@@ -40,8 +40,17 @@
     mounted () {
       // 去除背景色
       document.body.removeAttribute('style');
-      if (sessionStorage.getItem('user')) {
-        this.$router.push('/manage');
+      let user = window.localStorage.getItem('dXNlcg==');
+      if (user) {
+        try {
+          user = JSON.parse(user);
+          // 七天之内不需要重复登录
+          if (window.moment().valueOf() - (user.time || 0) < 7 * 24 * 3600 * 1000) {
+            this.$router.push('/manage');
+          }
+        } catch (e) {
+          console.error('解析信息出错: ', e)
+        }
       }
     },
     methods: {
@@ -53,7 +62,10 @@
               password: window.btoa(this.user.password)
             }).then(res => {
               if (res.code === 200) {
-                window.sessionStorage.setItem('user', JSON.stringify(res.data));
+                window.localStorage.setItem('dXNlcg==', JSON.stringify({
+                  ...res.data,
+                  time: window.moment().valueOf()
+                }));
                 this.$message.success('登录成功');
                 this.$router.push('/manage');
               }

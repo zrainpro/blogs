@@ -15,12 +15,12 @@
         </slot>
         <el-button slot="reference" size="small" plain>添加</el-button>
       </el-popover>
-      <el-button @click="save" size="small" plain type="success" style="margin-left: 10px">保存</el-button>
+      <el-button size="small" plain type="success" style="margin-left: 10px" @click="save">保存</el-button>
     </div>
     <div class="head-box">
-      <div class="head-box-item" v-for="(item, index) in list" :key="item">
+      <div v-for="(item, index) in list" :key="item" class="head-box-item">
         <img :src="item" alt="">
-        <div class="delete" @click="deleteItem(index)">X</div>
+        <div class="delete" @click="deleteItem(index)"><icon class="hover-red" use="iconicon_trashcan" /></div>
       </div>
     </div>
   </div>
@@ -111,6 +111,9 @@
     cursor: pointer;
     &:hover {
       opacity: 1;
+    }
+    svg {
+      fill: #fffdef;
     }
   }
 }
