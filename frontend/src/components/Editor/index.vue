@@ -147,7 +147,6 @@
               this.$refs.editor.removeChild(mutation.target.parentElement); // 移除原标签
             } else if (mutation.type === 'childList') {
               // 判断变更节点是引用的节点,删除的时候退出 blockquote 标签并插入一行新的
-              // todo bug 第一行为空白时无法删除标签
               if (this.keyCode === 8 && mutation.target.nodeName === 'BLOCKQUOTE' && Array.prototype.find.call(mutation.removedNodes, _ => _.nodeName.toLowerCase() === this.lineTagName)) {
                 // 如果删除 b
                 const tempInsert = this.createLineElement();
@@ -195,7 +194,8 @@
             // 兼容后面有元素删除不了第一行的特殊标签
             const newElement = this.createLineElement();
             newElement.innerHTML = first.innerHTML.replace(new RegExp(`<[/]*${this.lineTagName}[^>]*>`, 'g'), '');
-            window.insertAfter(first, this.createLineElement(), this.$refs.editor); // 添加一个标准行元素
+            console.log(newElement.innerHTML, '809')
+            window.insertAfter(first, newElement, this.$refs.editor); // 添加一个标准行元素
             this.$refs.editor.removeChild(first); // 删除第一行本来的元素
             this.$nextTick(() => this.pointNextLine('backward')); // 光标移动到上一行
           }
