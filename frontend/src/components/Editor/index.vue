@@ -176,9 +176,9 @@
         // 记录当前按键的值,方便判断行为
         this.$refs.editor.addEventListener('keydown', (event) => {
           // TODO 通过拦截删除行为解决浏览器怪异的删除行为(无法获取到具体的 dom 元素)
-          console.log(event);
+          // console.log(event);
           if (event.keyCode === 8) {
-            event.preventDefault();
+            // event.preventDefault();
           }
           this.keyCode = event.keyCode;
           this.domchanged = false; // 重新标记 dom 为未改变状态
@@ -189,7 +189,15 @@
             event.preventDefault();
           }
           if (!this.domchanged && event.keyCode === 8) {
+            const first = this.$refs.editor.firstElementChild;
+            if (first.nodeName.toLowerCase() === this.lineTagName && !first.innerText) return; // 如果首行元素不为空且为标准元素不应该删除
             // console.log('按下删除键但是没有删除元素')
+            // 兼容后面有元素删除不了第一行的特殊标签
+            const newElement = this.createLineElement();
+            newElement.innerHTML = first.innerHTML.replace(new RegExp(`<[/]*${this.lineTagName}[^>]*>`, 'g'), '');
+            window.insertAfter(first, this.createLineElement(), this.$refs.editor); // 添加一个标准行元素
+            this.$refs.editor.removeChild(first); // 删除第一行本来的元素
+            this.$nextTick(() => this.pointNextLine('backward')); // 光标移动到上一行
           }
         });
       },
@@ -348,8 +356,9 @@
         return element;
       },
       // 光标移动到下一行
-      pointNextLine() {
-        window.getSelection().modify('move', 'forward', 'line'); // 调整到下一行 todo 做兼容
+      pointNextLine(direction = 'forward', particle = 'line') {
+        // modify  backward  forward left right
+        window.getSelection().modify('move', direction, particle); // 调整到下一行 todo 做兼容
       }
     }
   }
