@@ -4,10 +4,13 @@ html, body {
   margin: 0;
   background-color: transparent;
 }
-*, svg:not {
+html, body, div, p, span, h1, h2, h3, h4, h5, h6, li, ul, table, header, canvas, article, aside, dialog, frame, form, footer, head, map, label, nav, pre, section, style, tbody, thead, textarea, video, title {
+  transition: all .2s ease-in-out;
+}
+* {
   box-sizing: border-box;
   font-size: 14px;
-  transition: all .2s ease-in-out;
+  // transition: all .2s ease-in-out;
   //color: #333333;
   &::-webkit-scrollbar {
     width: 8px;
