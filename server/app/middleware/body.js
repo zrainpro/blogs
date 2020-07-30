@@ -18,6 +18,8 @@ const skipRouter = [
   '/article/:id/like',
   '/article/:id/dislike',
   '/proxy',
+  '/some',
+  '/some2',
 ];
 
 module.exports = () => {

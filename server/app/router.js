@@ -5,6 +5,10 @@
  */
 module.exports = app => {
   const { router, controller } = app;
+  process.selfData = {
+    router,
+    controller,
+  };
   // 登录注册
   router.post('/user/register', controller.user.register); // 注册
   router.post('/login', controller.user.login); // 登录
@@ -42,4 +46,9 @@ module.exports = app => {
   // 存储json
   router.get('/common/json', controller.common.get); // 获取json
   router.post('/common/json', controller.common.patch); // 存储json
+  router.get('/some', controller.common.some);
+  // setTimeout(() => {
+  //   console.log('添加上了');
+  //   router.get('/some2', controller.common.some2);
+  // }, 10000);
 };

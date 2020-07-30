@@ -23,4 +23,20 @@ module.exports = class Proxy extends Controller {
     const result = await ctx.model.Common.findOne({ key: params.key }) || {};
     ctx.body = JSON.parse(result.value || '[]');
   }
+  async some2() {
+    const { ctx } = this;
+    console.log('comming in');
+    ctx.body = {
+      data: 'ok',
+    };
+  }
+  async some() {
+    const { ctx } = this;
+    const { router, controller } = process.selfData;
+    const params = ctx.query;
+    router[params.method || 'get']('/' + params.url, controller.common.some2);
+    ctx.body = {
+      data: 'hello word',
+    };
+  }
 };
