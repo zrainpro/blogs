@@ -14,13 +14,13 @@
     "moment": "^2.27.0",
     "monaco-editor": "^0.20.0",
     "register-service-worker": "^1.7.1",
-    "vue": "^2.6.11",
-    "vue-router": "^3.3.4",
+    "vue": "^2.6.12",
+    "vue-router": "^3.4.3",
     "vuex": "^3.5.1"
   },
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
-    "@babel/plugin-proposal-optional-chaining": "^7.10.4",
+    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
     "@vue/cli-plugin-babel": "^4.4.6",
     "@vue/cli-plugin-eslint": "^4.4.6",
     "@vue/cli-plugin-pwa": "^4.4.6",
@@ -30,7 +30,7 @@
     "@vue/eslint-config-standard": "^5.1.2",
     "axios": "^0.19.2",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.5.0",
+    "eslint": "^7.7.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
@@ -40,9 +40,9 @@
     "less-loader": "^6.2.0",
     "monaco-editor-webpack-plugin": "^1.9.0",
     "node-sass": "^4.14.1",
-    "sass-loader": "^9.0.2",
+    "sass-loader": "^9.0.3",
     "vue-cli-plugin-axios": "^0.0.4",
     "vue-cli-plugin-element": "^1.0.1",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.12"
   }
 }

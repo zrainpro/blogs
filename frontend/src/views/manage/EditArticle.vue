@@ -67,7 +67,7 @@
     methods: {
       parseCategory(id = '', source = []) {
         const result = [];
-        for (let it of source) {
+        for (const it of source) {
           if (it.value === id) {
             result.push(it.value);
             break;

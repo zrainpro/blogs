@@ -12,9 +12,18 @@ module.exports = {
       }
     }
   },
+
   configureWebpack: {
     plugins: [
       new MonacoWebpackPlugin()
     ]
+  },
+
+  pwa: {
+    name: '雨鱼',
+    msTileColor: '#4DBA87',
+    manifestOptions: {
+      background_color: '#4DBA87'
+    }
   }
 }

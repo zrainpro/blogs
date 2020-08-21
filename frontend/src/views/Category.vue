@@ -38,7 +38,7 @@
       }
     },
     watch: {
-      '$route': {
+      $route: {
         immediate: true,
         handler() {
           this.$nextTick(() => {

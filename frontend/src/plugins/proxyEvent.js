@@ -55,6 +55,7 @@ class ProxyEvent {
       throw new Error('传入的元素不是正确的 dom 元素!')
     }
   }
+
   // 移除事件监听
   remove(type, callback, el = this.defaultEl) {
     const _ = this.elsType.get(el);

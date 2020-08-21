@@ -71,7 +71,7 @@
       // 获取编辑器的代码
       getValue() {
         const clone = this.$refs.editor.cloneNode(true);
-        for (let item of clone.childNodes) {
+        for (const item of clone.childNodes) {
           if (item.getAttribute('class')?.includes('code-editor')) {
             const pre = document.createElement('pre');
             const id = item.getAttribute('id');
@@ -92,7 +92,7 @@
         this.monaco = {};
         this.$refs.editor.innerHTML = value;
         // 处理新的节点内容
-        for (let item of this.$refs.editor.childNodes) {
+        for (const item of this.$refs.editor.childNodes) {
           // 对代码特殊处理
           if (item.tagName === 'PRE') {
             this.createMonaco(item, item.getAttribute('language'), item.innerHTML);
@@ -127,7 +127,7 @@
             return;
           }
           // console.log(mutationList);
-          for (let mutation of mutationList) {
+          for (const mutation of mutationList) {
             // 文本节点改动
             if (mutation.type === 'characterData') {
               // 超出最长快捷键长度退出
@@ -317,7 +317,7 @@
         defaultValue && input.setAttribute('value', defaultValue); // 设置默认值
         const ul = document.createElement('ul');
         ul.setAttribute('class', 'editor-select-dropdown');
-        for (let item of options) {
+        for (const item of options) {
           const li = document.createElement('li');
           li.setAttribute('class', 'editor-select-dropdown-item')
           li.setAttribute('data-value', item.value);

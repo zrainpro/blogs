@@ -66,7 +66,8 @@ export default {
       searchForm: {
         main: [
           { type: 'input', key: 'keyword', label: '关键字' },
-          { type: 'select',
+          {
+ type: 'select',
             key: 'disabled',
             label: '状态',
             default: 0,
@@ -74,7 +75,8 @@ export default {
               { value: 0, label: '启用' },
               { value: 1, label: '禁用' },
               { value: 2, label: '所有' }
-            ] }
+            ]
+}
         ],
         more: [
           { type: 'cascader', key: 'category', label: '分类', options: [] },

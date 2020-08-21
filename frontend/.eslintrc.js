@@ -1,12 +1,10 @@
 module.exports = {
   root: true,
+
   env: {
     node: true
   },
-  'extends': [
-    'plugin:vue/recommended',
-    '@vue/standard'
-  ],
+
   rules: {
     'no-console': 'off',
     'no-debugger': 'off',
@@ -21,7 +19,13 @@ module.exports = {
     'no-new': 'off',
     'object-property-newline': 'off'
   },
+
   parserOptions: {
     parser: 'babel-eslint'
-  }
+  },
+
+  extends: [
+    'plugin:vue/strongly-recommended',
+    '@vue/standard'
+  ]
 }

@@ -27,7 +27,7 @@
       })
     },
     watch: {
-      '$route': {
+      $route: {
         immediate: true,
         handler() {
           this.which = this.className[Math.floor(Math.random() * this.className.length)]

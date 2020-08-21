@@ -50,7 +50,7 @@
       setStyle() {
         if (this.styles.color) {
           if (this.styles.color.reduce((a, b) => a + b, 0) < 180) {
-            this.$refs.menu && this.$refs.menu.setAttribute('style', `color: rgb(244,244,244)`);
+            this.$refs.menu && this.$refs.menu.setAttribute('style', 'color: rgb(244,244,244)');
           } else {
             this.$refs.menu && this.$refs.menu.removeAttribute('style');
           }

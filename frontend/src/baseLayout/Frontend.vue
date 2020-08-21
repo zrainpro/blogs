@@ -41,7 +41,8 @@ export default {
       menu: [
         { name: '杂文', route: '/essay' },
         { name: '闲谈', route: '/chat' },
-        { name: '技术',
+        {
+ name: '技术',
           route: '/technology',
           children: [
             { name: 'WEB前端', route: '/technology/front' },
@@ -152,7 +153,7 @@ export default {
       .then(res => res.blob())
       .then(blob => {
         return new Promise((resolve) => {
-          let reader = new FileReader();
+          const reader = new FileReader();
           reader.readAsDataURL(blob);
           reader.onloadend = () => {
             resolve(reader.result); // 输出DataURL数据

@@ -9,6 +9,7 @@ export default class ContextMenu {
     this.unRenderFunc = null;
     this.register();
   }
+
   // 注册事件
   register() {
     if (!this.el || !(this.el instanceof Element)) {
@@ -40,6 +41,7 @@ export default class ContextMenu {
       }, true)
     }
   }
+
   // 创建样式
   createStyle() {
     if (document.head.querySelector('style[data="zr-contextmenu"]')) return
@@ -74,6 +76,7 @@ export default class ContextMenu {
     style.innerText = styleStr;
     document.head.appendChild(style)
   }
+
   // 获取事件的 path 路径
   getEventPath(event) {
     if (!event) return [];
@@ -83,6 +86,7 @@ export default class ContextMenu {
       return [event.target, document.body];
     }
   }
+
   // 隐藏菜单取消注册事件
   unRender(event) {
     let unregister = true;
@@ -105,6 +109,7 @@ export default class ContextMenu {
       document.removeEventListener('mousedown', this.unRenderFunc);
     }
   }
+
   // 渲染菜单
   render() {
     if (!this.menu || !this.menu.length) return;
