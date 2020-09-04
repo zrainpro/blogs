@@ -29,7 +29,7 @@ module.exports = appInfo => {
         },
       },
     },
-    middleware: [ 'body' ],
+    middleware: [ 'body', 'redis' ],
     security: {
       csrf: {
         enable: false,

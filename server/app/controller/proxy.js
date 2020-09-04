@@ -6,12 +6,11 @@ module.exports = class Proxy extends Controller {
   async index() {
     const { ctx } = this;
     const params = ctx.request.body;
-    console.log(params);
     if (!params.url) {
       ctx.body = '';
       return;
     }
-    const result = await ctx.curl(params.url || '');
+    const result = await ctx.curl(params.url || '', { dataType: 'json' });
     console.log(result);
     ctx.body = {
       selfFile: true,

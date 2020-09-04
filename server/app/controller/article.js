@@ -9,6 +9,7 @@ const {
 class UserController extends Controller {
   constructor(props) {
     super(props);
+    this.bmapAK = '2EaDGAqYX9FWw3wOBKjkL6vkstGc6WYU';
     this.selectKeys = 'title topicImg intro tag content category like dislike view updateTime createTime';
   }
   // 新建/修改 文章
@@ -75,13 +76,47 @@ class UserController extends Controller {
   async getDetail() {
     const { ctx } = this;
     const articleId = ctx.params.id;
+    const user = ctx.session.user; // 登陆用户的观看不记录观看数
     const result = await ctx.model.Article.findOneAndUpdate({
       _id: articleId,
-    }, { $inc: { view: 1 } }).select(this.selectKeys);
+    }, { $inc: { view: user ? 0 : 1 } }).select(this.selectKeys);
+
     if (!result) {
       ctx.throw('文章不存在');
     }
+    !user && this.recordViewInfo(ctx, result); // 建立浏览数据统计
     ctx.body = result;
+  }
+  // 记录浏览数据
+  async recordViewInfo(ctx, result) {
+    const ip = '180.141.50.70' || ctx.request.ip;
+    // 先查询数据库中是否有 ip 信息, 有的话直接取用, 没有调用百度地图做 ip 记录
+    let ipInfo = await ctx.model.Ip.findOne({ ip });
+
+    if (!ipInfo) {
+      // 请求 ip 数据并存储
+      const request = await ctx.curl(`http://api.map.baidu.com/location/ip?ak=${this.bmapAK}&ip=${ip}&coor=bd09ll`, { dataType: 'json' });
+      console.log(request, 'request');
+      if (request.data.status === 0) {
+        const data = request.data.content;
+        ipInfo = {
+          ip, // 浏览人的 ip
+          address: data.address, // 简要地址信息
+          city: data.address_detail?.city, // ip 对应城市
+          point: JSON.stringify(data.point), // 城市中心点
+          addressDetail: JSON.stringify(data.address_detail || ''), // 结构化城市信息, json 数据
+        };
+        // 保存 ip 信息
+        await ctx.model.Ip.create(ipInfo);
+      }
+    }
+    // 无论最终是否有城市信息均记录
+    await ctx.model.Views.create({
+      article: result._id, // 所属文章ID
+      ip, // 记录浏览人的地址信息
+      city: ipInfo?.city, // 记录浏览人所在城市信息
+      createTime: new Date().getTime(), // 创建时间
+    });
   }
   // 后台获取文章详情
   async getBackDetail() {
@@ -116,8 +151,8 @@ class UserController extends Controller {
     const { ctx } = this;
     const params = { ...ctx.query, ...ctx.request.body };
     const page = parseInt(params.page) || 1;
-    const limit = parseInt(params.limit) || 10;
-    const disab = parseInt(params.disabled) || 2;
+    const limit = parseInt(params.limit || 10) || 10;
+    const disab = parseInt(params.disabled || 2) ?? 2;
     let skipNum = (page - 1) * limit;
     skipNum < 0 && (skipNum = 0);
     const disabled = viewer ? { disabled: 0 } : (disab === 2 ? {} : { disabled: disab });
@@ -248,13 +283,13 @@ class UserController extends Controller {
   // 删除文章
   async deleteArticle() {
     const { ctx } = this;
-    const params = ctx.request.body;
+    const id = ctx.params.id;
     await ctx.model.Article.remove({
-      _id: { $in: params },
+      _id: { $in: id },
     });
     // 同时删除相关评论
     await ctx.model.Comment.remove({
-      article: { $in: params },
+      article: { $in: id },
     });
     ctx.body = 'success';
   }

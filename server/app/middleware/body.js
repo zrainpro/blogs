@@ -20,6 +20,7 @@ const skipRouter = [
   '/proxy',
   '/some',
   '/some2',
+  '/statistics/address',
 ];
 
 module.exports = () => {

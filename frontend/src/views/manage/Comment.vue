@@ -39,7 +39,7 @@
           >
             {{row.disabled === 0 ? '删除' : '启用'}}
           </el-button>
-          <el-button type="text" @click="deleteComment([row._id])">彻底删除</el-button>
+          <el-button type="text" class="red" @click="deleteComment([row._id])">彻底删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -70,7 +70,8 @@ export default {
       searchForm: {
         main: [
           { type: 'input', key: 'keyword', label: '关键字' },
-          { type: 'select',
+          {
+            type: 'select',
             key: 'disabled',
             label: '状态',
             default: 0,
@@ -78,7 +79,8 @@ export default {
               { value: 0, label: '正常' },
               { value: 1, label: '回收站' },
               { value: 2, label: '所有' }
-            ] },
+            ]
+          },
           { type: 'searchSelect', key: 'article', label: '所属文章', callback: this.getArticleData }
         ]
       },

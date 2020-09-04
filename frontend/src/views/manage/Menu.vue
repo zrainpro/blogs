@@ -138,7 +138,7 @@ export default {
     display: flex;
     flex-direction: row;
     padding: 4px 10px;
-    background-color: #76D7C4;
+    background-color: lavender;
     border: 1px solid #E8F8F5;
     >* + * {
       margin-left: 20px;
@@ -148,7 +148,6 @@ export default {
     }
   }
   .menu-children {
-    background-color: #F9E79F;
     padding-left: 40px;
   }
 }

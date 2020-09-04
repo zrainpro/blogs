@@ -10,6 +10,7 @@
   "dependencies": {
     "color-thief-browser": "^2.0.2",
     "core-js": "^3.6.5",
+    "echarts": "^4.9.0",
     "element-ui": "^2.13.2",
     "moment": "^2.27.0",
     "monaco-editor": "^0.20.0",

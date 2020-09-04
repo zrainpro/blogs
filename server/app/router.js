@@ -43,6 +43,9 @@ module.exports = app => {
   router.post('/article/:id/delete', controller.article.deleteArticle); // 删除文章
   // 代理请求防止跨域
   router.post('/proxy', controller.proxy.index);
+  // 数据统计
+  router.post('/statistics/time', controller.views.timeCount); // 统计浏览时间
+  router.post('/statistics/address', controller.views.addressCount); // 浏览人地址统计
   // 存储json
   router.get('/common/json', controller.common.get); // 获取json
   router.post('/common/json', controller.common.patch); // 存储json

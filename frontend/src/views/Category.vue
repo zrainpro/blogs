@@ -44,6 +44,8 @@
           this.$nextTick(() => {
             this.$global.loading = true; // 开启加载动画
             this.$safeEmitComponentMethod('changeTheme');
+            this.page = { ...this.page, page: 1, total: 0 }; // 重置页码
+            this.list = []; // 重置数据
             this.getList();
           });
         }
@@ -87,7 +89,7 @@
             const params = { ...this.page };
             menu && (params.category = menu.id);
             this.apiGet('/api/article/list', { params }).then(res => {
-              this.list.splice((this.page.page - 1) * this.page.limit, this.page.limit, ...(res.data || []))
+              this.list.splice((this.page.page - 1) * this.page.limit, this.page.limit, ...(res.data || []));
               this.page = {
                 page: res.page,
                 limit: this.page.limit,

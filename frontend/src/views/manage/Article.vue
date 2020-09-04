@@ -40,6 +40,11 @@
       <el-table-column label="点踩数" prop="dislike" width="100" />
       <el-table-column label="更新时间" prop="updateTime" />
       <el-table-column label="创建时间" prop="createTime" />
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button type="text" class="red" @click="deleteItem(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <div v-if="page.total > page.limit" class="pagination">
       <el-pagination
@@ -62,12 +67,12 @@ export default {
   data() {
     return {
       lists: [],
-      page: { page: 1, limit: 10, total: 0 },
+      page: { page: 1, limit: 10, total: 0, disabled: 0 },
       searchForm: {
         main: [
           { type: 'input', key: 'keyword', label: '关键字' },
           {
- type: 'select',
+            type: 'select',
             key: 'disabled',
             label: '状态',
             default: 0,
@@ -132,6 +137,16 @@ export default {
           this.$message.success('操作成功!');
         }
       })
+    },
+    // 删除文章
+    deleteItem(item) {
+      this.$confirm('您确定删除嘛? 该操作不可恢复').then(res => {
+        console.log(res, item)
+        this.apiPost(`/api/article/${item._id}/delete`).then(() => {
+          this.getData(); // 重新获取数据
+          this.$message.success('删除成功!')
+        })
+      }).catch(() => this.$message.error('删除失败, 请稍后再试!'));
     }
   }
 }

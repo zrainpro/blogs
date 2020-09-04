@@ -14,7 +14,6 @@ module.exports = {
     'vue/max-attributes-per-line': 'off',
     'vue/singleline-html-element-content-newline': 'off',
     'vue/mustache-interpolation-spacing': 'off',
-    'vue/order-in-components': 'off',
     'vue/name-property-casing': 'off',
     'no-new': 'off',
     'object-property-newline': 'off'
@@ -24,8 +23,7 @@ module.exports = {
     parser: 'babel-eslint'
   },
 
-  extends: [
-    'plugin:vue/strongly-recommended',
-    '@vue/standard'
+  'extends': [
+    'plugin:vue/essential'
   ]
 }
