@@ -35,6 +35,12 @@ module.exports = appInfo => {
         enable: false,
       },
     },
+    session: {
+      key: 'EGG_SESSION',
+      maxAge: 1000 * 3600 * 24 * 7, // 有效期七天
+      httpOnly: true,
+      encrypt: true,
+    },
     proxy: true,
   };
 

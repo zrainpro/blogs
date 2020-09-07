@@ -89,14 +89,13 @@ class UserController extends Controller {
   }
   // 记录浏览数据
   async recordViewInfo(ctx, result) {
-    const ip = '180.141.50.70' || ctx.request.ip;
+    const ip = ctx.request.ip;
     // 先查询数据库中是否有 ip 信息, 有的话直接取用, 没有调用百度地图做 ip 记录
     let ipInfo = await ctx.model.Ip.findOne({ ip });
 
     if (!ipInfo) {
       // 请求 ip 数据并存储
       const request = await ctx.curl(`http://api.map.baidu.com/location/ip?ak=${this.bmapAK}&ip=${ip}&coor=bd09ll`, { dataType: 'json' });
-      console.log(request, 'request');
       if (request.data.status === 0) {
         const data = request.data.content;
         ipInfo = {
