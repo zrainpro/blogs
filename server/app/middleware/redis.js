@@ -17,7 +17,7 @@ module.exports = () => {
       const params = JSON.stringify(ctx.request.body || {});
       const which = ctx.path + params;
       // 判断是否有缓存数据, 并判断是否缓存过期
-      if (data[which] && data[which].time - new Date().getTime() < redisWhich.time * 1000) {
+      if (data[which] && new Date().getTime() - data[which].time < redisWhich.time * 1000) {
         ctx.body = data[which].data;
       } else {
         await next();
