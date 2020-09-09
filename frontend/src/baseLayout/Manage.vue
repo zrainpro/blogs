@@ -81,6 +81,7 @@ export default {
       this.apiPost('/api/loginout').then(res => {
         if (res.code === 200) {
           this.$message.success('登出成功');
+          window.localStorage.removeItem('dXNlcg=='); // 删除用户信息
           this.$router.push('/');
         }
       })
