@@ -77,14 +77,15 @@ class UserController extends Controller {
     const { ctx } = this;
     const articleId = ctx.params.id;
     const user = ctx.session.user; // 登陆用户的观看不记录观看数
+    const recordView = !user && ctx.request.ip !== '127.0.0.1'; // 调试环境以及登陆用户不记录观看数
     const result = await ctx.model.Article.findOneAndUpdate({
       _id: articleId,
-    }, { $inc: { view: user ? 0 : 1 } }).select(this.selectKeys);
+    }, { $inc: { view: recordView ? 1 : 0 } }).select(this.selectKeys);
 
     if (!result) {
       ctx.throw('文章不存在');
     }
-    !user && this.recordViewInfo(ctx, result); // 建立浏览数据统计
+    recordView && this.recordViewInfo(ctx, result); // 建立浏览数据统计
     ctx.body = result;
   }
   // 记录浏览数据
