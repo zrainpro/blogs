@@ -141,7 +141,6 @@ export default {
     // 删除文章
     deleteItem(item) {
       this.$confirm('您确定删除嘛? 该操作不可恢复').then(res => {
-        console.log(res, item)
         this.apiPost(`/api/article/${item._id}/delete`).then(() => {
           this.getData(); // 重新获取数据
           this.$message.success('删除成功!')

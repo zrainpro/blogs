@@ -25,7 +25,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <textarea v-model="user.content" maxlength="1000" class="reply-content" />
+      <textarea v-model="user.content" maxlength="1000" class="reply-content" placeholder="说点什么吧~~" />
       <div class="reply-bottom">
         <div class="avatar-box">
           <el-tooltip v-if="!showUser" :content="`亲爱的“${user.nickname}”,点击可以修改头像哦`">

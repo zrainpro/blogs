@@ -88,7 +88,7 @@ export default {
     }
   },
   created () {
-    this.user = JSON.parse(sessionStorage.getItem('user'));
+    this.user = JSON.parse(localStorage.getItem('dXNlcg=='));
   },
   mounted () {
     // 获取评论信息
@@ -162,7 +162,7 @@ export default {
     // 回复评论
     replay(item, row) {
       // 获取管理员信息
-      const admin = JSON.parse(sessionStorage.getItem('user'));
+      const admin = JSON.parse(localStorage.getItem('dXNlcg=='));
       this.apiPost('/api/comment/create', {
         article: row.article._id,
         nickname: admin.nickname + '（博主）',

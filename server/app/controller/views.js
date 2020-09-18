@@ -9,7 +9,7 @@ module.exports = class Proxy extends Controller {
     this.supportTimeType = [ 'day', 'hour' ];
     this.typeTrans = {
       day: 'YYYY-MM-DD',
-      hour: 'DD',
+      hour: 'HH',
     };
   }
   // 浏览时间统计
@@ -32,7 +32,7 @@ module.exports = class Proxy extends Controller {
 
     // 查询到全局的数据
     const data = await ctx.model.Views.find(query).select('createTime');
-    // 筛选数据, 根据时间统计, 包括 天的统计, 时间段的统计(时间段统计略难)
+    // 筛选数据, 根据时间统计, 包括 天的统计, 时间段的统计
     const countData = {};
     const format = this.typeTrans[type];
     for (const item of data) {

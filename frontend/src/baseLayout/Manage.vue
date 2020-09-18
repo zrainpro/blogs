@@ -59,6 +59,7 @@ export default {
   },
   mounted() {
     const userInfo = window.localStorage.getItem('dXNlcg==');
+    console.log(userInfo, 'userInfo')
     if (userInfo) {
       try {
         this.userInfo = JSON.parse(userInfo);
