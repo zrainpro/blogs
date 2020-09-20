@@ -367,7 +367,7 @@ export default {
     }
   }
   #content {
-    width: 100vw;
+    width: 100%;
     min-height: calc(100vh - 400px);
     padding-bottom: 100px;
     display: flex;
