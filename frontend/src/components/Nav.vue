@@ -40,6 +40,7 @@
     watch: {
       styles: {
         deep: true,
+        immediate: true,
         handler() {
           this.setStyle()
         }
@@ -58,7 +59,7 @@
       },
       // 设置menu样式
       setBarStyle() {
-        this.$refs.bar.setAttribute('style', Object.keys(this.barStyle).map(key => `${key}: ${this.barStyle[key]}`).join(';'))
+        this.$refs.bar?.setAttribute('style', Object.keys(this.barStyle).map(key => `${key}: ${this.barStyle[key]}`).join(';'))
       },
       mouseenter(item, index) {
         this.showDrop = item.name;
@@ -75,7 +76,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
   @import url(../style/var);
   .nav-menu {
     display: flex;

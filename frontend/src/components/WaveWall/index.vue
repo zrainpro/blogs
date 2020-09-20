@@ -28,7 +28,7 @@
     },
     mounted () {
       this.listener = () => {
-        this.width = window.innerWidth - 10;
+        this.width = window.innerWidth < 900 ? window.innerWidth : (window.innerWidth - 10);
         this.drewLine(); // 绘制线条
         this.drewWave(this.width); // 绘制波浪
       }

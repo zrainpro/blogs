@@ -1,7 +1,7 @@
 <template>
   <div ref="box" class="reply">
     <el-button type="text" @click="show = !show">回复</el-button>
-    <div v-show="show" class="replay-box">
+    <div v-show="show" class="reply-box">
       <div v-if="showUser">
         <el-form :model="user" :rules="rules" inline label-width="80px">
           <el-form-item label="昵称" prop="nickname">
@@ -80,26 +80,6 @@
           ]
         },
         avatarList: [
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head1.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head2.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head3.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head4.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head5.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head6.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head7.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head8.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head9.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head10.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head11.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head12.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head13.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head14.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head15.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head16.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head17.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head18.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head19.jpg',
-          'https://yuyublog.oss-cn-shanghai.aliyuncs.com/head/head20.jpg'
         ],
         show: false,
         showUser: true,
@@ -207,7 +187,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    .replay-box {
+    .reply-box {
       width: 630px;
       position: absolute;
       right: -0.5em;
@@ -222,9 +202,6 @@
       &::before {
         content: '';
         display: block;
-        /*border-left: 10px solid transparent;*/
-        /*border-right: 10px solid transparent;*/
-        /*border-bottom: 10px solid rgba(255,255,255,0.2);*/
         width: 18px;
         height: 18px;
         border-top: 1px solid rgba(200, 200, 200, 0.8);

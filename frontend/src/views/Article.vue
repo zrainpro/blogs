@@ -231,4 +231,49 @@
       }
     }
   }
+
+  @media screen and (max-width: 900px) {
+    .article {
+      width: calc(100vw - 10px);
+      padding: 20px 10px;
+      .comment {
+        margin-top: 20px;
+        .comment-children {
+          margin: 0;
+        }
+      }
+      /* 评论的样式 */
+      /deep/ .reply-box {
+        width: 100vw;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        top: auto;
+        background-color: rgba(0,0,0, 0.8);
+        padding: 10px;
+        &::before {
+          display: none;
+          right: 1.3em;
+          width: 0;
+          height: 0;
+          transform: rotate(180deg);
+          top: -11px;
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          border-top: 10px solid rgba(0,0,0, 0.8);
+        }
+      }
+      /deep/ .avatar-box .avatar-list {
+        width: 100vw;
+        left: -90px;
+        background-color: rgba(255,255,255,0.9);
+        >div {
+          width: 100%;
+        }
+        &::after {
+          left: 105px;
+        }
+      }
+    }
+  }
 </style>

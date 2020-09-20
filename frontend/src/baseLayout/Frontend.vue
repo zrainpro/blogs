@@ -7,23 +7,27 @@
         <span class="getting-there">喝杯咖啡...</span>
       </div>
     </div>
-    <div id="nav" ref="nav">
+    <div id="nav" ref="nav" :class="navHeight ? 'scroll-height' : ''">
       <div ref="navBar" class="nav-content">
         <div id="logo" ref="logo" @click="$route.path !== '/home' && $router.push('/home')" />
-        <SelfNav :menu="menu" :styles="styles" />
+        <MobileNav :menu="menu" :styles="styles" :height="navHeight ? 60 : 80" v-if="showNav" />
+        <SelfNav v-else :menu="menu" :styles="styles" />
       </div>
       <WaveWall :styles="styles" />
     </div>
     <div id="content">
+      <div class="side"></div>
       <transition>
         <router-view />
       </transition>
+      <div class="side"></div>
     </div>
   </div>
 </template>
 
 <script>
 import SelfNav from '@/components/Nav';
+import MobileNav from '@/components/mobileNav'
 import WaveWall from '@/components/WaveWall';
 import moment from 'moment';
 import ContextMenu from '../utils/ContextMenu'
@@ -33,40 +37,21 @@ export default {
   name: 'home',
   components: {
     SelfNav,
-    WaveWall
+    WaveWall,
+    MobileNav
   },
   data() {
     return {
       moment,
       menu: [
-        { name: '杂文', route: '/essay' },
-        { name: '闲谈', route: '/chat' },
-        {
- name: '技术',
-          route: '/technology',
-          children: [
-            { name: 'WEB前端', route: '/technology/front' },
-            { name: 'NodeJS', route: '/technology/node' },
-            { name: '混合开发/小程序', route: '/technology/micro' },
-            { name: '半导体技术', route: '/technology/semiconductor' }
-          ]
-        },
-        { name: '操作系统', route: '/os' },
-        { name: '友情链接', route: '/blogroll', disabled: true }
+        { name: '分类一', route: '/one' }
       ],
       styles: { color: [255, 255, 255] }, // 导航条样式
       background: [
-        'http://img.zrain.top/img/232535.jpg?x-oss-process=style/webp',
-        'http://img.zrain.top/img/13206.jpg?x-oss-process=style/webp',
-        'http://img.zrain.top/img/150642rmddwgdde1x0o9az.jpg?x-oss-process=style/webp',
-        'http://img.zrain.top/img/216087.jpg?x-oss-process=style/webp',
-        'http://img.zrain.top/img/217652.jpg?x-oss-process=style/webp',
-        'http://img.zrain.top/img/217922.jpg?x-oss-process=style/webp',
-        'http://img.zrain.top/img/231285.jpg?x-oss-process=style/webp',
-        'http://img.zrain.top/img/287162.jpg?x-oss-process=style/webp',
-        'http://img.zrain.top/img/5040.jpg?x-oss-process=style/webp'
       ],
       backgroundImgColor: [], // 主题色
+      showNav: false, // 是否显示移动端的 nav 按钮
+      navHeight: false,
       which: null, // 当前背景图
       loading: true // 加载中 loading 状态
     }
@@ -97,10 +82,14 @@ export default {
         ]
       })
     })
+    // 添加宽度改变监听事件
+    window.addEventListener('resize', this.resizeEvent);
+    this.resizeEvent();
   },
   destroyed () {
     // 注销滚动事件
-    document.removeEventListener('scroll', this.scrollEvent)
+    // document.removeEventListener('scroll', this.scrollEvent)
+    // document.removeEventListener('resize', this.resizeEvent)
   },
   methods: {
     // 获取背景图
@@ -145,7 +134,7 @@ export default {
     },
     // 获取背景图
     getBackImg(base64) {
-      this.$refs.nav.setAttribute('style', `background-image: url(${base64})`);
+      this.$refs.nav?.setAttribute('style', `background-image: url(${base64})`);
     },
     // 获取主题色
     getThemeColor() {
@@ -169,7 +158,7 @@ export default {
         img.setAttribute('crossOrigin', 'anonymous');
         img.onload = () => {
           this.backgroundImgColor = color.getPalette(img)
-          this.$refs.navBar.setAttribute('style', `background-color: rgba(${this.backgroundImgColor[1].join(',')}, 0.15)`)
+          this.$refs.navBar.setAttribute('style', `background-color: rgba(${this.backgroundImgColor[1].join(',')}, ${this.showNav ? 0.6 : 0.15})`)
           this.styles = {
             color: this.backgroundImgColor[1]
           }
@@ -188,10 +177,14 @@ export default {
     // 滚动事件
     scrollEvent() {
       if (window.pageYOffset > 100) {
-        this.$refs.nav.className = 'scroll-height'
+        this.navHeight = true;
       } else {
-        this.$refs.nav.className = ''
+        this.navHeight = false;
       }
+    },
+    // resize 事件
+    resizeEvent() {
+      this.showNav = window.innerWidth < 900;
     }
   }
 }
@@ -339,7 +332,7 @@ export default {
     .nav-content {
       padding: 0 40px;
       height: 80px;
-      width: 100%;
+      width: 100vw;
       position: fixed;
       top: 0;
       left: 0;
@@ -356,6 +349,7 @@ export default {
       position: relative;
       width: 70px;
       height: 70px;
+      flex-shrink: 0;
       cursor: pointer;
       background-image: url("../assets/logo.png");
       background-size: cover;
@@ -373,11 +367,15 @@ export default {
     }
   }
   #content {
+    width: 100vw;
     min-height: calc(100vh - 400px);
     padding-bottom: 100px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
+    .side {
+      flex: 1;
+    }
   }
 </style>
