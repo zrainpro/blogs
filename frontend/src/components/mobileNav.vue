@@ -43,7 +43,7 @@
     },
     data() {
       return {
-        showMenu: true, // 是否展示菜单,
+        showMenu: false, // 是否展示菜单,
         color: 'rgb(45, 70, 84)',
         reload: Math.random(),
         realMenu: []
