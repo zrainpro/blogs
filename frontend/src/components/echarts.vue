@@ -88,7 +88,7 @@ export default {
     }
   },
   beforeDestroy() {
-    this.chart.destroy();
+    this.chart && this.chart.dispose();
   },
   methods: {
 

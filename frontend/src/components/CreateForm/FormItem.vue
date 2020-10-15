@@ -3,6 +3,8 @@
   <el-input v-if="item.type === 'input'"
             v-model="form[item.key]"
             size="small"
+            :disabled="item.disabled"
+            :type="item.inputType || 'text'"
             :placeholder="item.placeholder"
   />
   <!-- 下拉框类型 -->

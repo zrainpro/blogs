@@ -26,6 +26,7 @@
               {{userInfo.nickname}} 您好<i class="el-icon-arrow-down el-icon--right" />
             </span>
             <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="info">网站信息</el-dropdown-item>
               <el-dropdown-item command="loginout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -59,7 +60,6 @@ export default {
   },
   mounted() {
     const userInfo = window.localStorage.getItem('dXNlcg==');
-    console.log(userInfo, 'userInfo')
     if (userInfo) {
       try {
         this.userInfo = JSON.parse(userInfo);
@@ -70,12 +70,22 @@ export default {
       this.$message.info('登录过期,请重新登录!')
       this.$router.replace('/login')
     }
+    // 把登出事件挂载到全局
+    this.$onComponentMethod('loginout', {
+      handler: this.loginout.bind(this)
+    });
   },
   methods: {
     handleCommand(command) {
       if (command === 'loginout') {
         this.loginout()
+      } else if (command === 'info') {
+        this.info();
       }
+    },
+    // 跳转到网站信息
+    info() {
+      this.$router.push('/manage/info')
     },
     // 退出登录
     loginout() {

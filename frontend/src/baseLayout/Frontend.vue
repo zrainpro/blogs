@@ -22,6 +22,9 @@
       </transition>
       <div class="side"></div>
     </div>
+    <div class="about">
+      <a href="https://beian.miit.gov.cn/?spm=a2cmq.17629970.7y9jhqsfz.112.74b479feTgnlbW#/Integrated/index">{{copyright.replace('{now}', moment().year()).replace('{备案号}', beian)}}</a>
+    </div>
   </div>
 </template>
 
@@ -46,6 +49,8 @@ export default {
       menu: [
         { name: '分类一', route: '/one' }
       ],
+      beian: '', // 备案号
+      copyright: '', // copyright 格式化文本
       styles: { color: [255, 255, 255] }, // 导航条样式
       background: [
       ],
@@ -62,6 +67,8 @@ export default {
     this.getBackground();
     // 获取菜单
     this.getMenu();
+    // 获取备案号
+    this.getBeian();
     // 设置全局数据 loading
     this.$storeData('loading', true, {
       bind: this,
@@ -88,8 +95,8 @@ export default {
   },
   destroyed () {
     // 注销滚动事件
-    // document.removeEventListener('scroll', this.scrollEvent)
-    // document.removeEventListener('resize', this.resizeEvent)
+    document.removeEventListener('scroll', this.scrollEvent)
+    document.removeEventListener('resize', this.resizeEvent)
   },
   methods: {
     // 获取背景图
@@ -102,6 +109,15 @@ export default {
         this.$onComponentMethod('changeTheme', {
           handler: this.changeTheme.bind(this)
         })
+      })
+    },
+    // 获取备案号
+    getBeian() {
+      this.apiGet('/api/common/json', { params: { key: 'beian' } }).then(res => {
+        if (res.data && res.data.value) {
+          this.beian = res.data.value;
+          this.copyright = res.data.copyright || 'Copyright © 2017- {now}. All Rights Reserved. {备案号}'
+        }
       })
     },
     // 获取菜单
@@ -324,6 +340,14 @@ export default {
           opacity: 1;
         }
       }
+    }
+    .about {
+      height: 50px;
+      line-height: 50px;
+      width: 100%;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.4);
+      color: rgba(255,255,255,0.8);
     }
   }
   #nav {

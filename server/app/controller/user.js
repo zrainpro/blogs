@@ -59,6 +59,10 @@ class UserController extends Controller {
   async updateUserInfo() {
     const { ctx } = this;
     const params = ctx.request.body;
+    const user = JSON.parse(ctx.session.user);
+    if (user.user !== params.user) {
+      ctx.throw('您没有权限修改该用户的信息哦!!!');
+    }
     // 检查传参
     const checkEmptyKeys = [
       { key: 'user', message: '用户名不能为空' },
@@ -68,7 +72,7 @@ class UserController extends Controller {
     const result = await ctx.model.User.findOneAndUpdate({
       user: params.user,
     }, {
-      $set: { ...params },
+      $set: { ...params, user: params.newUser || params.user },
     }).select('user avatar nickname email phone');
     if (!result || !result._id) {
       ctx.throw('无法保存用户信息或者用户不存在');

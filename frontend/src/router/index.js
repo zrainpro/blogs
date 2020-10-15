@@ -78,6 +78,11 @@ const routes = [
         component: () => import('../views/manage/Link.vue') // 友链管理
       },
       {
+        path: '/manage/info',
+        name: '网站信息',
+        component: () => import('../views/manage/Info') // 网站信息
+      },
+      {
         path: '/manage/*',
         name: '404',
         component: () => import('../views/404')
