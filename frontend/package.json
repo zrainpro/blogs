@@ -5,21 +5,24 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "autod": "autod"
   },
   "dependencies": {
     "color-thief-browser": "^2.0.2",
     "core-js": "^3.6.5",
     "echarts": "^4.9.0",
-    "element-ui": "^2.13.2",
-    "moment": "^2.27.0",
+    "element-ui": "^2.14.1",
+    "moment": "^2.29.1",
     "monaco-editor": "^0.20.0",
-    "register-service-worker": "^1.7.1",
+    "register-service-worker": "^1.7.2",
     "vue": "^2.6.12",
-    "vue-router": "^3.4.3",
-    "vuex": "^3.5.1"
+    "vue-router": "^3.4.9",
+    "vuex": "^3.6.0",
+    "axios": "^0.21.1"
   },
   "devDependencies": {
+    "autod": "^3.1.1",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
     "@babel/plugin-proposal-optional-chaining": "^7.11.0",
     "@vue/cli-plugin-babel": "^4.4.6",
@@ -29,7 +32,6 @@
     "@vue/cli-plugin-vuex": "^4.4.6",
     "@vue/cli-service": "^4.4.6",
     "@vue/eslint-config-standard": "^5.1.2",
-    "axios": "^0.19.2",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.7.0",
     "eslint-plugin-import": "^2.22.0",
@@ -39,7 +41,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "less": "^3.12.2",
     "less-loader": "^6.2.0",
-    "monaco-editor-webpack-plugin": "^1.9.0",
+    "monaco-editor-webpack-plugin": "^2.1.0",
     "node-sass": "^4.14.1",
     "sass-loader": "^9.0.3",
     "vue-cli-plugin-axios": "^0.0.4",
