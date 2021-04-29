@@ -34,7 +34,6 @@ class UserController extends Controller {
       disabled: 0,
       category: params.category,
       updateTime: new Date().getTime(),
-      createTime: new Date().getTime(),
     };
     if (params.id) {
       // 修改文章
@@ -43,6 +42,7 @@ class UserController extends Controller {
       }, { $set: { ...saveParams } });
       ctx.body = result;
     } else {
+      saveParams.createTime = new Date().getTime(); // 新建文章才设置创建时间
       // 新建文章
       const result = await ctx.model.Article.create(saveParams);
       ctx.body = result;
