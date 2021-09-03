@@ -3,13 +3,14 @@ const zlib = require('zlib');
 
 module.exports = {
   devServer: {
+    https: true,
     proxy: {
       '/api': {
         // target: 'http://[::1]:7001',
-        target: 'http://zrain.top',
+        target: 'https://zrain.top',
         changeOrigin: true,
         pathRewrite: {
-          '^/api/': '/'
+          // '^/api/': '/'
         }
       }
     }

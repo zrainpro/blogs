@@ -1,11 +1,8 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createWebHistory, createRouter } from 'vue-router'
 import HomeLayout from '../baseLayout/Frontend.vue'; // 首页layout
 import Base from '../baseLayout/base'; // router-view
 import Article from '../views/Article'; // 文章页
 import Category from '../views/Category'; // 分类文章
-
-Vue.use(VueRouter);
 
 const routes = [
   {
@@ -123,19 +120,16 @@ const routes = [
     ]
   },
   {
-    path: '*',
+    path: '/:catchAll(.*)',
     name: '404',
     component: () => import('../views/404')
   }
 ]
 
-const router = new VueRouter({
-  mode: 'history',
+const router = createRouter({
+  history: createWebHistory(),
   base: process.env.BASE_URL,
   routes
-});
-
-// router.beforeEach((to) => {
-// })
+})
 
 export default router

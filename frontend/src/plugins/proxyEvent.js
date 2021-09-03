@@ -4,8 +4,6 @@
  * 不支持 vue react 这类的组件, 这类组件应该由组件自带的 添加事件
  * */
 
-import Vue from 'vue'
-
 class ProxyEvent {
   constructor (props = {}) {
     this.listener = {};
@@ -82,4 +80,8 @@ class ProxyEvent {
   }
 }
 
-Vue.prototype.$event = new ProxyEvent();
+export default {
+  install: function (app) {
+    app.config.globalProperties.$event = new ProxyEvent();
+  }
+};

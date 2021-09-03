@@ -1,5 +1,9 @@
-import Vue from 'vue'
-import Element from 'element-ui'
+import Element from 'element-plus'
+import 'element-plus/dist/index.css'
 // import '../element-variables.less'
 
-Vue.use(Element)
+export default {
+  install: function (app) {
+    app.use(Element)
+  }
+}
