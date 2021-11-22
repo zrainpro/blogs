@@ -7,13 +7,13 @@
         width="300"
         trigger="click"
       >
-        <slot name="content">
-          <div class="add">
-            <el-input v-model="tempUrl" size="small" placeholder="请输入图片地址" />
-            <el-button size="small" plain type="success" @click="add">确定</el-button>
-          </div>
-        </slot>
-        <el-button slot="reference" size="small" plain>添加</el-button>
+        <template #reference>
+          <el-button slot="reference" size="small" plain>添加</el-button>
+        </template>
+        <div class="add">
+          <el-input v-model="tempUrl" size="small" placeholder="请输入图片地址" />
+          <el-button size="small" plain type="success" @click="add">确定</el-button>
+        </div>
       </el-popover>
       <el-button size="small" plain type="success" style="margin-left: 10px" @click="save">保存</el-button>
     </div>
@@ -28,7 +28,7 @@
 
 <script>
   export default {
-    name: 'head',
+    name: 'headerImg',
     data() {
       return {
         list: [],

@@ -28,10 +28,10 @@
       </div>
     </div>
     <el-dialog
-      :visible.sync="show"
+      v-model="show"
       width="1200px"
     >
-      <img :src="url" width="100%" alt="">
+      <img :src="url" class="img" alt="">
     </el-dialog>
   </div>
 </template>
@@ -141,5 +141,8 @@
   /deep/ .el-input {
     width: 300px;
   }
+}
+.img {
+  width: 100%;
 }
 </style>

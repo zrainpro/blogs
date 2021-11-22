@@ -4,7 +4,7 @@
     <!--  条件搜索  -->
     <div class="search">
       <CreateForm label-width="80px" :data-source="searchForm" @onOk="handleOk">
-        <template slot="btn">
+        <template #btn>
           <el-button size="small" @click="$router.push('/manage/article/create')">写文章</el-button>
         </template>
       </CreateForm>
@@ -12,20 +12,20 @@
     <!-- 文章列表 -->
     <el-table :data="lists">
       <el-table-column label="标题" prop="title">
-        <template slot-scope="scope">
+        <template #default="scope">
           <router-link :to="`/manage/article/${scope.row._id}`">{{scope.row.title}}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="分类" prop="categoryName" width="80" />
       <el-table-column label="标签" prop="tag" width="140">
-        <template slot-scope="scope">
+        <template #default="scope">
           <div class="tag-box">
             <span v-for="item in (scope.row.tag || '').split(',').filter(_ => _)" :key="item" class="tag">{{item}}</span>
           </div>
         </template>
       </el-table-column>
       <el-table-column label="是否禁用" prop="disabled" width="140">
-        <template slot-scope="scope">
+        <template #default="scope">
           <el-switch v-model="scope.row.disabled"
                      :active-value="0"
                      :inactive-value="1"
@@ -41,8 +41,8 @@
       <el-table-column label="更新时间" prop="updateTime" />
       <el-table-column label="创建时间" prop="createTime" />
       <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" class="red" @click="deleteItem(scope.row)">删除</el-button>
+        <template #default="scope">
+          <el-button type="text" class="red" size="mini" @click="deleteItem(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

@@ -20,6 +20,7 @@
     },
     mounted () {
       this.$getStore('themeColor').then(color => {
+        if (!color) return;
         if (color.reduce((a, b) => a + b, 0) < 180) {
           this.color = 'rgba(236, 240, 241, 0.8)';
         } else {

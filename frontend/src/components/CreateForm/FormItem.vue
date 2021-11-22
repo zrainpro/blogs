@@ -38,10 +38,11 @@
     :fetch-suggestions="querySearch"
     placeholder="请输入内容"
     @select="form[item.key] = $event.value"
+    @change="!$event.value && (form[item.key] = '')"
   >
-    <template slot-scope="{ item: it }">
-      <span>{{ it.label }}</span>
-    </template>
+<!--    <template #default="{ item: it }">-->
+<!--      <span>{{ it.label }}</span>-->
+<!--    </template>-->
   </el-autocomplete>
 </template>
 
@@ -65,6 +66,11 @@
     data() {
       return {
         autoComplete: ''
+      }
+    },
+    watch: {
+      autoComplete() {
+        console.log(this.autoComplete);
       }
     },
     methods: {

@@ -116,7 +116,7 @@
     },
     methods: {
       blurHide(event) {
-        if (!this.$refs.box.contains(event.target)) {
+        if (!this.$refs.box?.contains(event.target)) {
           this.show = false;
         } else if (this.$refs.topBox && !this.$refs.topBox.contains(event.target)) {
           this.showChooseAvatar = false;

@@ -25,10 +25,12 @@
             <span class="el-dropdown-link">
               {{userInfo.nickname}} 您好<i class="el-icon-arrow-down el-icon--right" />
             </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="info">网站信息</el-dropdown-item>
-              <el-dropdown-item command="loginout">退出登录</el-dropdown-item>
-            </el-dropdown-menu>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="info">网站信息</el-dropdown-item>
+                <el-dropdown-item command="loginout">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
           </el-dropdown>
         </div>
       </div>

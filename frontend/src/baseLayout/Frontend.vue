@@ -176,7 +176,7 @@ export default {
         img.setAttribute('crossOrigin', 'anonymous');
         img.onload = () => {
           this.backgroundImgColor = color.getPalette(img)
-          this.$refs.navBar.setAttribute('style', `background-color: rgba(${this.backgroundImgColor[1].join(',')}, ${this.showNav ? 0.6 : 0.15})`)
+          this.$refs.navBar?.setAttribute('style', `background-color: rgba(${this.backgroundImgColor[1].join(',')}, ${this.showNav ? 0.6 : 0.15})`)
           this.styles = {
             color: this.backgroundImgColor[1]
           }

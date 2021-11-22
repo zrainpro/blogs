@@ -15,14 +15,14 @@
       <el-table-column type="selection" width="30" />
       <el-table-column label="内容" prop="content" width="300" show-overflow-tooltip />
       <el-table-column label="所属文章" prop="article">
-        <template slot-scope="{ row }">
+        <template #default="{ row }">
           <a :href="`/article/${row.article._id}`" target="_blank">{{row.article.title}}</a>
         </template>
       </el-table-column>
       <el-table-column label="昵称" prop="nickname" />
       <el-table-column label="电子邮箱" prop="email" />
       <el-table-column label="博客地址" prop="disabled" width="150">
-        <template slot-scope="scope">
+        <template #default="scope">
           <a :href="scope.row.blog" target="_blank">{{scope.row.blog}}</a>
         </template>
       </el-table-column>
@@ -30,16 +30,17 @@
       <el-table-column label="点踩数" prop="dislike" width="80" />
       <el-table-column label="创建时间" prop="createTime" width="100" />
       <el-table-column label="操作" width="120">
-        <template slot-scope="{ row }">
+        <template #default="{ row }">
           <Reply :self-user="user" @reply="replay($event, row)" />
           <el-button
             type="text"
+            size="mini"
             :class="row.disabled === 0 ? 'red' : 'green'"
             @click="enabled(row.disabled === 0 ? 1 : 0, [row._id])"
           >
             {{row.disabled === 0 ? '删除' : '启用'}}
           </el-button>
-          <el-button type="text" class="red" @click="deleteComment([row._id])">彻底删除</el-button>
+          <el-button type="text" class="red" size="mini" @click="deleteComment([row._id])">彻底删除</el-button>
         </template>
       </el-table-column>
     </el-table>

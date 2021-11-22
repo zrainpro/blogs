@@ -15,7 +15,7 @@
         <el-button type="primary" plain size="small" @click="handlePublish">发布</el-button>
       </div>
     </div>
-    <el-input v-model="title" size="big" placeholder="无标题" class="edit-article-title" />
+    <el-input v-model="title" size="large" placeholder="无标题" class="edit-article-title" />
     <Editor ref="editor" class="editor" />
   </div>
 </template>

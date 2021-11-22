@@ -109,7 +109,7 @@
       setDefault() {
         ([...(this.dataSource.main || []), ...(this.dataSource.more || [])]).forEach(item => {
           if (typeof item.default !== 'undefined') {
-            this.$set(this.form, item.key, item.default);
+            this.form[item.key] = item.default;
           }
         })
       }
