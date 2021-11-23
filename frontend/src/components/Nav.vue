@@ -50,9 +50,13 @@
       // 设置主题色
       setStyle() {
         if (this.styles.color) {
-          if (this.styles.color.reduce((a, b) => a + b, 0) < 180) {
+          const c = this.styles.color;
+          const grayLevel = c[0] * 0.299 + c[1] * 0.587 + c[2] * 0.114;
+          if (grayLevel <= 192) {
+            // 若为深色
             this.$refs.menu && this.$refs.menu.setAttribute('style', 'color: rgb(244,244,244)');
           } else {
+            // 若为浅色
             this.$refs.menu && this.$refs.menu.removeAttribute('style');
           }
         }

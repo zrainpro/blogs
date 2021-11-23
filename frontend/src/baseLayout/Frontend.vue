@@ -142,7 +142,7 @@ export default {
       const length = this.background.length;
       this.which = url || this.background[Math.floor(Math.random() * length)];
       // 动态设置背景图
-      this.getBackImg()
+      // this.getBackImg(this.which)
       // 背景主题色提取
       this.getThemeColor()
       // 防止加载图片意外没有关闭 loading 动画 10秒超时
@@ -170,10 +170,10 @@ export default {
       .then(dataUrl => {
         const color = new ColorThief()
         const img = new Image()
+        img.crossOrigin = 'Anonymous'
         img.src = dataUrl;
         // 设置背景图
         this.getBackImg(dataUrl);
-        img.setAttribute('crossOrigin', 'anonymous');
         img.onload = () => {
           this.backgroundImgColor = color.getPalette(img)
           this.$refs.navBar?.setAttribute('style', `background-color: rgba(${this.backgroundImgColor[1].join(',')}, ${this.showNav ? 0.6 : 0.15})`)
