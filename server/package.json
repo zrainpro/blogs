@@ -12,7 +12,7 @@
     "egg-scripts": "^2.13.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "path-to-regexp": "^6.2.0"
+    "path-to-regexp": "^7.1.0"
   },
   "devDependencies": {
     "autod": "^3.1.1",

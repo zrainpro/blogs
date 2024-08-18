@@ -7,13 +7,13 @@
         width="300"
         trigger="click"
       >
-        <slot name="content">
-          <div class="add">
-            <el-input v-model="tempUrl" size="small" placeholder="请输入图片地址" />
-            <el-button size="small" plain type="success" @click="addItem">确定</el-button>
-          </div>
-        </slot>
-        <el-button slot="reference" size="small" plain>添加</el-button>
+        <template #reference>
+          <el-button slot="reference" size="small" plain>添加</el-button>
+        </template>
+        <div class="add">
+          <el-input v-model="tempUrl" size="small" placeholder="请输入图片地址" />
+          <el-button size="small" plain type="success" @click="addItem">确定</el-button>
+        </div>
       </el-popover>
       <el-button v-if="false" type="success" plain size="small" @click="save">保存</el-button>
     </div>
@@ -144,5 +144,12 @@
 }
 .img {
   width: 100%;
+}
+.add {
+  display: flex;
+  flex-direction: row;
+  > * + * {
+    margin-left: 15px;
+  }
 }
 </style>

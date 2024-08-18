@@ -32,28 +32,43 @@ const routes = [
         component: () => import('../views/manage/Menu.vue') // 菜单管理
       },
       {
-        path: '/manage/article',
-        redirect: '/manage/article/lists',
+        path: '/manage/article/lists',
         name: '文章管理',
-        component: Base, // 文章管理
-        children: [
-          {
-            path: '/manage/article/lists',
-            name: '文章管理',
-            component: () => import('../views/manage/Article.vue') // 文章管理
-          },
-          {
-            path: '/manage/article/create',
-            name: '创建文章',
-            component: () => import('../views/manage/EditArticle') // 创建文章
-          },
-          {
-            path: '/manage/article/:id',
-            name: '编辑文章',
-            component: () => import('../views/manage/EditArticle') // 编辑文章
-          }
-        ]
+        component: () => import('../views/manage/Article.vue') // 文章管理
       },
+      {
+        path: '/manage/article/create',
+        name: '创建文章',
+        component: () => import('../views/manage/EditArticle') // 创建文章
+      },
+      {
+        path: '/manage/article/:id',
+        name: '编辑文章',
+        component: () => import('../views/manage/EditArticle') // 编辑文章
+      },
+      // {
+      //   path: '/manage/article',
+      //   redirect: '/manage/article/lists',
+      //   name: '文章管理',
+      //   component: Base, // 文章管理
+      //   children: [
+      //     {
+      //       path: '/manage/article/lists',
+      //       name: '文章管理',
+      //       component: () => import('../views/manage/Article.vue') // 文章管理
+      //     },
+      //     {
+      //       path: '/manage/article/create',
+      //       name: '创建文章',
+      //       component: () => import('../views/manage/EditArticle') // 创建文章
+      //     },
+      //     {
+      //       path: '/manage/article/:id',
+      //       name: '编辑文章',
+      //       component: () => import('../views/manage/EditArticle') // 编辑文章
+      //     }
+      //   ]
+      // },
       {
         path: '/manage/comment',
         name: '评论管理',
@@ -80,7 +95,7 @@ const routes = [
         component: () => import('../views/manage/Info') // 网站信息
       },
       {
-        path: '/manage/*',
+        path: '/manage/:catchAll(.*)',
         name: '404',
         component: () => import('../views/404')
       }
@@ -103,7 +118,7 @@ const routes = [
         component: Category
       },
       {
-        path: '/category/*',
+        path: '/category/:catchAll(.*)',
         name: '分类',
         component: Category
       },
@@ -113,7 +128,7 @@ const routes = [
         component: Article
       },
       {
-        path: '/*',
+        path: '/:catchAll(.*)',
         name: '404',
         component: () => import('../views/404')
       }
